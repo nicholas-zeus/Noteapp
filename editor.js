@@ -1,4 +1,4 @@
-import { saveNote, getNote } from './db.js';
+import { saveNote, getNote, deleteNote, listCategories } from './db.js';
 import { textColorFor } from './color.js';
 import { recordAudioFlow } from './audio.js';
 
@@ -15,15 +15,21 @@ const els = {
   primaryCategorySelect: document.getElementById('primaryCategorySelect'),
   imageInput: document.getElementById('imageInput'),
   insertCheckboxBtn: document.getElementById('insertCheckboxBtn'),
-  recordBtn: document.getElementById('recordBtn'),
-  toggleCodeBtn: document.getElementById('toggleCodeModeBtn'),
   closeBtn: document.getElementById('closeEditorBtn'),
+
+  // dropdown menu
+  moreMenuBtn: document.getElementById('moreMenuBtn'),
+  moreMenu: document.getElementById('moreMenu'),
+  addImageMenuBtn: document.getElementById('addImageMenuBtn'),
+  addVoiceMenuBtn: document.getElementById('addVoiceMenuBtn'),
+  toggleCodeMenuBtn: document.getElementById('toggleCodeMenuBtn'),
+  deleteNoteMenuBtn: document.getElementById('deleteNoteMenuBtn'),
 };
 
 let activeNote = null;
 let autosaveTimer = null;
 
-export async function openEditor(note, catColor){
+export async function openEditor(note, catColor) {
   activeNote = note;
   applyEditorTheme(catColor || '#CDE7FF');
 
@@ -35,19 +41,20 @@ export async function openEditor(note, catColor){
   if (note.format === 'code') ensureCodeMirror(note.content || '');
   else destroyCodeMirror();
 
-  // Show overlay and hide header via body class
   document.body.classList.add('editing');
   els.overlay.classList.remove('hidden');
   els.title.focus();
 }
-export function closeEditor(){
+
+export function closeEditor() {
   els.overlay.classList.add('hidden');
   document.body.classList.remove('editing');
   destroyCodeMirror();
   activeNote = null;
 }
 
-function ensureCodeMirror(value){
+/* ---------- CodeMirror ---------- */
+function ensureCodeMirror(value) {
   if (codeMirror) return;
   codeMirror = window.CodeMirror.fromTextArea(els.code, {
     mode: 'javascript',
@@ -59,76 +66,86 @@ function ensureCodeMirror(value){
   codeMirror.setValue(value || '');
   codeMirror.on('change', scheduleAutosave);
 }
-function destroyCodeMirror(){
+
+function destroyCodeMirror() {
   if (!codeMirror) return;
   codeMirror.toTextArea();
   codeMirror = null;
 }
 
-function scheduleAutosave(){
+/* ---------- Autosave ---------- */
+function scheduleAutosave() {
   els.saveStatus.textContent = 'Saving…';
   clearTimeout(autosaveTimer);
   autosaveTimer = setTimeout(saveCurrentNote, 350);
 }
 
-async function saveCurrentNote(){
+async function saveCurrentNote() {
   if (!activeNote) return;
-  const content = activeNote.format === 'code' ? (codeMirror?.getValue() || '') : els.rich.innerHTML;
+  const content = activeNote.format === 'code'
+    ? (codeMirror?.getValue() || '')
+    : els.rich.innerHTML;
+
   activeNote.title = els.title.value.trim() || 'Untitled';
   activeNote.content = content;
-  activeNote.primaryCategoryId = document.getElementById('primaryCategorySelect').value || '';
+  activeNote.primaryCategoryId =
+    document.getElementById('primaryCategorySelect').value || '';
+
   await saveNote(activeNote);
   els.saveStatus.textContent = 'Saved ✓';
-  document.dispatchEvent(new CustomEvent('notes:changed')); // refresh cards
+  document.dispatchEvent(new CustomEvent('notes:changed'));
 }
 
-function applyEditorTheme(bgHex){
+/* ---------- Theme ---------- */
+function applyEditorTheme(bgHex) {
   const textHex = textColorFor(bgHex);
   els.panel.style.background = `linear-gradient(180deg, ${bgHex}40, rgba(0,0,0,.35))`;
   els.panel.style.color = textHex;
   els.rich.style.background = 'transparent';
   els.rich.style.color = textHex;
-  document.querySelectorAll('.tool,.title-input,.select').forEach(el=>{
-    el.style.color = textHex;
-    el.style.borderColor = textHex + '33';
-    el.style.background = 'rgba(0,0,0,.08)';
-  });
+  document
+    .querySelectorAll('.tool,.title-input,.select')
+    .forEach(el => {
+      el.style.color = textHex;
+      el.style.borderColor = textHex + '33';
+      el.style.background = 'rgba(0,0,0,.08)';
+    });
 }
 
-function wrapSelection(tag){
-  document.execCommand(tag);
+/* ---------- Editing Tools ---------- */
+function wrapSelection(cmd) {
+  els.rich.focus();
+  document.execCommand(cmd, false, null);
   scheduleAutosave();
 }
 
-function insertChecklist(){
+function insertChecklist() {
   const p = document.createElement('p');
   p.className = 'checkline';
   p.innerHTML = `<input type="checkbox" /> <span>Checklist item</span>`;
   els.rich.appendChild(p);
-  p.querySelector('span').focus();
   scheduleAutosave();
 }
 
-function onCheckToggle(e){
+function onCheckToggle(e) {
   const line = e.target.closest('.checkline');
   if (!line) return;
-  if (e.target.checked) line.classList.add('done');
-  else line.classList.remove('done');
+  line.classList.toggle('done', e.target.checked);
   scheduleAutosave();
 }
 
-function insertImage(file){
+function insertImage(file) {
   const reader = new FileReader();
   reader.onload = () => {
     const img = document.createElement('img');
-    img.src = reader.result; // data URL persisted in note HTML
+    img.src = reader.result;
     els.rich.appendChild(img);
     scheduleAutosave();
   };
   reader.readAsDataURL(file);
 }
 
-function insertAudio(dataUrl){
+function insertAudio(dataUrl) {
   const wrap = document.createElement('div');
   wrap.className = 'audio-chip';
   wrap.innerHTML = `<audio controls src="${dataUrl}"></audio>`;
@@ -136,38 +153,69 @@ function insertAudio(dataUrl){
   scheduleAutosave();
 }
 
-/* Event wiring */
-document.querySelectorAll('.tool[data-cmd]').forEach(btn=>{
-  btn.addEventListener('click', ()=> wrapSelection(btn.dataset.cmd));
+/* ---------- Events ---------- */
+// formatting
+document.querySelectorAll('.tool[data-cmd]').forEach(btn => {
+  btn.addEventListener('click', () => wrapSelection(btn.dataset.cmd));
 });
 els.insertCheckboxBtn.addEventListener('click', insertChecklist);
 els.rich.addEventListener('change', onCheckToggle);
 els.rich.addEventListener('input', scheduleAutosave);
 els.title.addEventListener('input', scheduleAutosave);
 
-els.imageInput.addEventListener('change', (e)=> {
-  const f = e.target.files?.[0]; if (f) insertImage(f);
+// category change
+els.primaryCategorySelect.addEventListener('change', async e => {
+  const catId = e.target.value || '';
+  activeNote.primaryCategoryId = catId;
+  await saveNote(activeNote);
+  const cats = await listCategories();
+  const cat = cats.find(c => c.id === catId);
+  if (cat) applyEditorTheme(cat.color);
+  els.saveStatus.textContent = 'Saved ✓';
+  document.dispatchEvent(new CustomEvent('notes:changed'));
+});
+
+/* ---------- Dropdown Menu ---------- */
+els.moreMenuBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  els.moreMenu.classList.toggle('hidden');
+});
+document.addEventListener('click', () => els.moreMenu.classList.add('hidden'));
+
+// menu actions
+els.addImageMenuBtn.addEventListener('click', () => {
+  els.imageInput.click();
+});
+
+els.imageInput.addEventListener('change', e => {
+  const f = e.target.files?.[0];
+  if (f) insertImage(f);
   e.target.value = '';
 });
-els.recordBtn.addEventListener('click', async ()=>{
+
+els.addVoiceMenuBtn.addEventListener('click', async () => {
   if (!stopRecording) {
-    stopRecording = await recordAudioFlow(insertAudio, (s)=> els.saveStatus.textContent = s);
+    stopRecording = await recordAudioFlow(
+      insertAudio,
+      s => (els.saveStatus.textContent = s)
+    );
+    els.addVoiceMenuBtn.textContent = 'Stop Recording ⏹';
   } else {
-    stopRecording(); stopRecording = null;
+    stopRecording();
+    stopRecording = null;
+    els.addVoiceMenuBtn.textContent = 'Record Voice 🎙';
   }
 });
 
-els.toggleCodeBtn.addEventListener('click', ()=>{
+els.toggleCodeMenuBtn.addEventListener('click', () => {
   if (!activeNote) return;
   if (activeNote.format === 'code') {
-    // to rich
     activeNote.format = 'richtext';
     els.code.classList.add('hidden');
     els.rich.classList.remove('hidden');
     els.rich.innerHTML = codeMirror?.getValue() || '';
     destroyCodeMirror();
   } else {
-    // to code
     activeNote.format = 'code';
     els.rich.classList.add('hidden');
     els.code.classList.remove('hidden');
@@ -175,21 +223,20 @@ els.toggleCodeBtn.addEventListener('click', ()=>{
   }
   scheduleAutosave();
 });
-// update category color live
-els.primaryCategorySelect.addEventListener('change', async e => {
-  const catId = e.target.value || '';
-  activeNote.primaryCategoryId = catId;
-  await saveNote(activeNote);
-  const { listCategories } = await import('./db.js');
-  const cats = await listCategories();
-  const cat = cats.find(c => c.id === catId);
-  if (cat) applyEditorTheme(cat.color);
-  els.saveStatus.textContent = 'Saved ✓';
+
+els.deleteNoteMenuBtn.addEventListener('click', async () => {
+  if (!activeNote) return;
+  const ok = confirm('Delete this note?');
+  if (!ok) return;
+  await deleteNote(activeNote.id);
   document.dispatchEvent(new CustomEvent('notes:changed'));
+  closeEditor();
 });
+
 els.closeBtn.addEventListener('click', closeEditor);
 
-export async function loadNoteIntoEditor(id){
+/* ---------- Export helper ---------- */
+export async function loadNoteIntoEditor(id) {
   const note = await getNote(id);
   return note;
 }

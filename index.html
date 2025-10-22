@@ -2,74 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Notes</title>
   <link rel="stylesheet" href="styles.css" />
 
   <!-- CodeMirror (CDN) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
+
 <body>
+  <!-- ======= HEADER / CARD VIEW ======= -->
   <header class="app-header" id="appHeader">
     <div class="header-actions">
       <label class="label" for="categoryFilterSelect">Category</label>
       <select id="categoryFilterSelect" class="select"></select>
-
       <div class="spacer"></div>
-
-<button id="newNoteBtn" class="btn primary" title="New note">+</button>
+      <button id="newNoteBtn" class="btn primary" title="New note">+</button>
       <button id="manageCategoriesBtn" class="btn ghost">Categories</button>
     </div>
   </header>
 
   <main>
-    <!-- Cards View -->
     <section id="cardsView" class="cards-grid" aria-live="polite"></section>
   </main>
 
-  <!-- Note Editor Overlay (full-screen takeover) -->
+  <!-- ======= NOTE EDITOR OVERLAY ======= -->
   <div id="editorOverlay" class="overlay hidden" role="dialog" aria-modal="true">
     <div id="editorPanel" class="editor-panel">
+      <!-- --- TOP BAR --- -->
       <div class="editor-topbar">
         <button id="closeEditorBtn" class="icon-btn" title="Back" aria-label="Back">⟵</button>
-
         <input id="noteTitle" class="title-input" placeholder="Untitled…" />
+        <select id="primaryCategorySelect" class="select small"></select>
+        <button id="moreMenuBtn" class="icon-btn" title="More">⋮</button>
+      </div>
 
-        <div class="toolbar">
-          <label class="sr-only" for="primaryCategorySelect">Category</label>
-          <select id="primaryCategorySelect" class="select small"></select>
+      <!-- --- EDITORS --- -->
+      <div id="richEditor" class="editor" contenteditable="true" spellcheck="true"></div>
+      <textarea id="codeEditor" class="code-editor hidden" spellcheck="false"></textarea>
 
+      <!-- --- BOTTOM BAR --- -->
+      <div class="editor-bottombar">
+        <div class="bottom-toolbar">
           <button class="tool" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
           <button class="tool" data-cmd="italic" title="Italic (Ctrl+I)">I</button>
           <button class="tool" data-cmd="underline" title="Underline (Ctrl+U)">U</button>
           <button id="insertCheckboxBtn" class="tool" title="Insert checklist">☑︎</button>
-
-          <label class="tool file-label" title="Insert image">
-            🖼
-            <input id="imageInput" type="file" accept="image/*" hidden />
-          </label>
-
-          <button id="recordBtn" class="tool" title="Record voice">🎙</button>
-          <button id="toggleCodeModeBtn" class="tool" title="Code mode">&lt;/&gt;</button>
         </div>
-      </div>
-
-      <!-- Editor areas -->
-      <div id="richEditor" class="editor" contenteditable="true" spellcheck="true"></div>
-      <textarea id="codeEditor" class="code-editor hidden" spellcheck="false"></textarea>
-
-      <div class="editor-bottombar">
         <div id="saveStatus" class="save-status">Saved ✓</div>
       </div>
     </div>
+
+    <!-- --- FLOATING 3-DOT MENU --- -->
+    <div id="moreMenu" class="dropdown hidden">
+      <button id="addImageMenuBtn" class="dropdown-item">Add Image 🖼</button>
+      <button id="addVoiceMenuBtn" class="dropdown-item">Record Voice 🎙</button>
+      <button id="toggleCodeMenuBtn" class="dropdown-item">Toggle Code Mode &lt;/&gt;</button>
+      <button id="deleteNoteMenuBtn" class="dropdown-item danger">Delete Note 🗑</button>
+    </div>
+    <input id="imageInput" type="file" accept="image/*" hidden />
   </div>
 
-  <!-- Manage Categories Modal -->
+  <!-- ======= CATEGORY MANAGER ======= -->
   <div id="categoriesModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Manage Categories">
     <div class="modal-card">
       <div class="modal-header">
@@ -85,6 +85,7 @@
     </div>
   </div>
 
+  <!-- ======= SCRIPTS ======= -->
   <script type="module" src="app.js"></script>
   <script type="module" src="db.js"></script>
   <script type="module" src="color.js"></script>
