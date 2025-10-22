@@ -35,11 +35,14 @@ export async function openEditor(note, catColor){
   if (note.format === 'code') ensureCodeMirror(note.content || '');
   else destroyCodeMirror();
 
+  // Show overlay and hide header via body class
+  document.body.classList.add('editing');
   els.overlay.classList.remove('hidden');
   els.title.focus();
 }
 export function closeEditor(){
   els.overlay.classList.add('hidden');
+  document.body.classList.remove('editing');
   destroyCodeMirror();
   activeNote = null;
 }
@@ -65,7 +68,7 @@ function destroyCodeMirror(){
 function scheduleAutosave(){
   els.saveStatus.textContent = 'Saving…';
   clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(saveCurrentNote, 400);
+  autosaveTimer = setTimeout(saveCurrentNote, 350);
 }
 
 async function saveCurrentNote(){
@@ -73,7 +76,7 @@ async function saveCurrentNote(){
   const content = activeNote.format === 'code' ? (codeMirror?.getValue() || '') : els.rich.innerHTML;
   activeNote.title = els.title.value.trim() || 'Untitled';
   activeNote.content = content;
-  activeNote.primaryCategoryId = document.getElementById('primaryCategorySelect').value || null;
+  activeNote.primaryCategoryId = document.getElementById('primaryCategorySelect').value || '';
   await saveNote(activeNote);
   els.saveStatus.textContent = 'Saved ✓';
   document.dispatchEvent(new CustomEvent('notes:changed')); // refresh cards
@@ -93,7 +96,7 @@ function applyEditorTheme(bgHex){
 }
 
 function wrapSelection(tag){
-  document.execCommand(tag); // pragmatic, widely supported for basics
+  document.execCommand(tag);
   scheduleAutosave();
 }
 

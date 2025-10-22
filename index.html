@@ -6,22 +6,22 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
-  <title>Notes — Colorful, 3D, Offline</title>
+  <title>Notes</title>
   <link rel="stylesheet" href="styles.css" />
 
   <!-- CodeMirror (CDN) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css" integrity="sha512-Pm7Hk2b7bJ8nAg4Y2h6pFsO5mJYoYBBYFqz33h4qE9nE9k5N7iXy0o5N0Q4KBCk3kT4k3S4y5Y9Qw5y6Wzv5Wg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js" integrity="sha512-fVsh3bd8f5q4v3JrO4aM8uK0nQ2H0tO/0oM4HcQwqks8jzq6o7E2b3bvjO6l7rXzD5tM3dp1tQYw0N3o6k0S1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js" integrity="sha512-tgk+VJr9f7g7b3Yc7Ck5WEdt6L7J2eZp9fFQzHjz0XI0w7iA6I9LrC5r3rh7i62b0iQ1uvJmib6vYpAA2cZx8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-  <header class="app-header">
-    <div class="brand">
-      <div class="brand-logo"></div>
-      <h1>Notes</h1>
-    </div>
+  <header class="app-header" id="appHeader">
     <div class="header-actions">
-      <div id="categoryFilter" class="chip-row"></div>
+      <label class="label" for="categoryFilterSelect">Category</label>
+      <select id="categoryFilterSelect" class="select"></select>
+
+      <div class="spacer"></div>
+
       <button id="newNoteBtn" class="btn primary">+ New Note</button>
       <button id="manageCategoriesBtn" class="btn ghost">Categories</button>
     </div>
@@ -29,36 +29,31 @@
 
   <main>
     <!-- Cards View -->
-    <section id="cardsView" class="cards-grid"></section>
+    <section id="cardsView" class="cards-grid" aria-live="polite"></section>
   </main>
 
-  <!-- Note Editor Overlay -->
-  <div id="editorOverlay" class="overlay hidden">
+  <!-- Note Editor Overlay (full-screen takeover) -->
+  <div id="editorOverlay" class="overlay hidden" role="dialog" aria-modal="true">
     <div id="editorPanel" class="editor-panel">
       <div class="editor-topbar">
-        <button id="closeEditorBtn" class="icon-btn" title="Back">
-          ⟵
-        </button>
+        <button id="closeEditorBtn" class="icon-btn" title="Back" aria-label="Back">⟵</button>
 
-        <div class="editor-meta">
-          <input id="noteTitle" class="title-input" placeholder="Untitled…" />
-          <div class="chip-row">
-            <select id="primaryCategorySelect" class="select">
-              <!-- Categories fill here -->
-            </select>
-            <button id="addMoreCategoriesBtn" class="btn tiny">+ Add categories</button>
-          </div>
-        </div>
+        <input id="noteTitle" class="title-input" placeholder="Untitled…" />
 
         <div class="toolbar">
+          <label class="sr-only" for="primaryCategorySelect">Category</label>
+          <select id="primaryCategorySelect" class="select small"></select>
+
           <button class="tool" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
           <button class="tool" data-cmd="italic" title="Italic (Ctrl+I)">I</button>
           <button class="tool" data-cmd="underline" title="Underline (Ctrl+U)">U</button>
           <button id="insertCheckboxBtn" class="tool" title="Insert checklist">☑︎</button>
+
           <label class="tool file-label" title="Insert image">
             🖼
             <input id="imageInput" type="file" accept="image/*" hidden />
           </label>
+
           <button id="recordBtn" class="tool" title="Record voice">🎙</button>
           <button id="toggleCodeModeBtn" class="tool" title="Code mode">&lt;/&gt;</button>
         </div>
@@ -66,7 +61,7 @@
 
       <!-- Editor areas -->
       <div id="richEditor" class="editor" contenteditable="true" spellcheck="true"></div>
-      <textarea id="codeEditor" class="code-editor hidden"></textarea>
+      <textarea id="codeEditor" class="code-editor hidden" spellcheck="false"></textarea>
 
       <div class="editor-bottombar">
         <div id="saveStatus" class="save-status">Saved ✓</div>
@@ -75,11 +70,11 @@
   </div>
 
   <!-- Manage Categories Modal -->
-  <div id="categoriesModal" class="modal hidden">
+  <div id="categoriesModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Manage Categories">
     <div class="modal-card">
       <div class="modal-header">
         <h3>Manage Categories</h3>
-        <button id="closeCategoriesBtn" class="icon-btn">✕</button>
+        <button id="closeCategoriesBtn" class="icon-btn" aria-label="Close">✕</button>
       </div>
       <div id="categoriesList" class="category-list"></div>
       <div class="category-form">
