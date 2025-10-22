@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Notes — Colorful, 3D, Offline</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- CodeMirror (CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css" integrity="sha512-Pm7Hk2b7bJ8nAg4Y2h6pFsO5mJYoYBBYFqz33h4qE9nE9k5N7iXy0o5N0Q4KBCk3kT4k3S4y5Y9Qw5y6Wzv5Wg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js" integrity="sha512-fVsh3bd8f5q4v3JrO4aM8uK0nQ2H0tO/0oM4HcQwqks8jzq6o7E2b3bvjO6l7rXzD5tM3dp1tQYw0N3o6k0S1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js" integrity="sha512-tgk+VJr9f7g7b3Yc7Ck5WEdt6L7J2eZp9fFQzHjz0XI0w7iA6I9LrC5r3rh7i62b0iQ1uvJmib6vYpAA2cZx8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo"></div>
+      <h1>Notes</h1>
+    </div>
+    <div class="header-actions">
+      <div id="categoryFilter" class="chip-row"></div>
+      <button id="newNoteBtn" class="btn primary">+ New Note</button>
+      <button id="manageCategoriesBtn" class="btn ghost">Categories</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Cards View -->
+    <section id="cardsView" class="cards-grid"></section>
+  </main>
+
+  <!-- Note Editor Overlay -->
+  <div id="editorOverlay" class="overlay hidden">
+    <div id="editorPanel" class="editor-panel">
+      <div class="editor-topbar">
+        <button id="closeEditorBtn" class="icon-btn" title="Back">
+          ⟵
+        </button>
+
+        <div class="editor-meta">
+          <input id="noteTitle" class="title-input" placeholder="Untitled…" />
+          <div class="chip-row">
+            <select id="primaryCategorySelect" class="select">
+              <!-- Categories fill here -->
+            </select>
+            <button id="addMoreCategoriesBtn" class="btn tiny">+ Add categories</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="tool" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
+          <button class="tool" data-cmd="italic" title="Italic (Ctrl+I)">I</button>
+          <button class="tool" data-cmd="underline" title="Underline (Ctrl+U)">U</button>
+          <button id="insertCheckboxBtn" class="tool" title="Insert checklist">☑︎</button>
+          <label class="tool file-label" title="Insert image">
+            🖼
+            <input id="imageInput" type="file" accept="image/*" hidden />
+          </label>
+          <button id="recordBtn" class="tool" title="Record voice">🎙</button>
+          <button id="toggleCodeModeBtn" class="tool" title="Code mode">&lt;/&gt;</button>
+        </div>
+      </div>
+
+      <!-- Editor areas -->
+      <div id="richEditor" class="editor" contenteditable="true" spellcheck="true"></div>
+      <textarea id="codeEditor" class="code-editor hidden"></textarea>
+
+      <div class="editor-bottombar">
+        <div id="saveStatus" class="save-status">Saved ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Categories Modal -->
+  <div id="categoriesModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Manage Categories</h3>
+        <button id="closeCategoriesBtn" class="icon-btn">✕</button>
+      </div>
+      <div id="categoriesList" class="category-list"></div>
+      <div class="category-form">
+        <input id="newCategoryName" class="input" placeholder="Category name (e.g., Work, Ideas)" />
+        <input id="newCategoryColor" class="input" type="color" value="#F0F4FF" />
+        <button id="addCategoryBtn" class="btn primary">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+  <script type="module" src="db.js"></script>
+  <script type="module" src="color.js"></script>
+  <script type="module" src="editor.js"></script>
+  <script type="module" src="audio.js"></script>
+  <script type="module" src="ui.js"></script>
+  <script type="module" src="sync.js"></script>
+</body>
+</html>
