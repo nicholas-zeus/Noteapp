@@ -128,14 +128,17 @@ body.editing .app-header{ display:none; }
 @keyframes liftIn{ to{ transform: translateY(0) scale(1); } }
 
 .editor-topbar{
-  display:flex; align-items:center; gap:10px;
-  padding: 10px 12px;
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.05));
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  padding:10px 12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.05));
   border-bottom:1px solid rgba(255,255,255,.06);
+}
+.toolbar{
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px;
+  margin-left:auto;
 }
 .title-input{ flex:1; font-size:16px; font-weight:600; }
 
-.toolbar{ display:flex; align-items:center; gap:8px; }
 
 .editor{
   flex:1; overflow:auto; padding: 18px 18px 24px;

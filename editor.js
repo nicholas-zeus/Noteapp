@@ -175,7 +175,18 @@ els.toggleCodeBtn.addEventListener('click', ()=>{
   }
   scheduleAutosave();
 });
-
+// update category color live
+els.primaryCategorySelect.addEventListener('change', async e => {
+  const catId = e.target.value || '';
+  activeNote.primaryCategoryId = catId;
+  await saveNote(activeNote);
+  const { listCategories } = await import('./db.js');
+  const cats = await listCategories();
+  const cat = cats.find(c => c.id === catId);
+  if (cat) applyEditorTheme(cat.color);
+  els.saveStatus.textContent = 'Saved ✓';
+  document.dispatchEvent(new CustomEvent('notes:changed'));
+});
 els.closeBtn.addEventListener('click', closeEditor);
 
 export async function loadNoteIntoEditor(id){
