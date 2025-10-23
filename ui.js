@@ -174,9 +174,30 @@ settingsBtn.addEventListener('click', async ()=>{
 closeSettingsBtn.addEventListener('click', ()=> settingsModal.classList.add('hidden'));
 
 /* ---------- Theme Toggle ---------- */
+import { textColorFor } from './color.js';
+
 function applyTheme(mode) {
   document.documentElement.setAttribute('data-theme', mode);
   localStorage.setItem('theme', mode);
+
+  // Update header & overlay text color dynamically
+  const appHeader = document.getElementById('appHeader');
+  const overlay = document.getElementById('editorPanel');
+  const bgColor = getComputedStyle(appHeader).backgroundColor;
+
+  // Extract hex from rgb() for consistency
+  const hex = rgbToHex(bgColor);
+  const textColor = textColorFor(hex);
+  appHeader.style.color = textColor;
+  if (overlay) overlay.style.color = textColor;
+}
+
+function rgbToHex(rgb) {
+  const result = rgb.match(/\d+/g);
+  if (!result) return '#000';
+  return '#' + result.slice(0, 3).map(x =>
+    ('0' + parseInt(x).toString(16)).slice(-2)
+  ).join('');
 }
 lightThemeBtn.addEventListener('click', ()=> applyTheme('light'));
 darkThemeBtn.addEventListener('click', ()=> applyTheme('dark'));
