@@ -22,18 +22,45 @@
 
 <body>
   <!-- ======= HEADER / CARD VIEW ======= -->
-  <header class="app-header" id="appHeader">
-    <div class="header-actions">
-      <label class="label" for="categoryFilterSelect">Category</label>
-<div id="categoryFilterTrigger" class="category-trigger">
-  <span id="categoryFilterLabel">All Categories</span>
-  <div class="cat-swatch tiny"></div>
-</div>
-      <div class="spacer"></div>
-      <button id="newNoteBtn" class="btn primary" title="New note">+</button>
-      <button id="manageCategoriesBtn" class="btn ghost">Categories</button>
+ <header class="app-header" id="appHeader">
+  <div class="header-actions">
+    <div id="categoryFilterTrigger" class="category-trigger">
+      <span id="categoryFilterLabel">All Categories</span>
+      <div class="cat-swatch tiny"></div>
     </div>
-  </header>
+    <div class="spacer"></div>
+    <button id="newNoteBtn" class="btn primary" title="New note">+</button>
+    <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
+  </div>
+</header>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Settings</h3>
+      <button id="closeSettingsBtn" class="icon-btn">✕</button>
+    </div>
+
+    <section class="settings-section">
+      <h4>Theme</h4>
+      <div class="theme-options">
+        <button id="lightThemeBtn" class="btn ghost">🌞 Light</button>
+        <button id="darkThemeBtn" class="btn ghost">🌙 Dark</button>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h4>Categories</h4>
+      <div id="categoriesList" class="category-list"></div>
+      <div class="category-form">
+        <input id="newCategoryName" class="input" placeholder="Category name (e.g., Work, Ideas)" />
+        <input id="newCategoryColor" class="input" type="color" value="#F0F4FF" />
+        <button id="addCategoryBtn" class="btn primary">Add</button>
+      </div>
+    </section>
+  </div>
+</div>
 
   <main>
     <section id="cardsView" class="cards-grid" aria-live="polite"></section>

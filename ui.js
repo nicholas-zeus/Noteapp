@@ -6,7 +6,11 @@ import { openEditor, loadNoteIntoEditor } from './editor.js';
 const cardsView = document.getElementById('cardsView');
 const newNoteBtn = document.getElementById('newNoteBtn');
 const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
-
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsModal = document.getElementById('settingsModal');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const lightThemeBtn = document.getElementById('lightThemeBtn');
+const darkThemeBtn = document.getElementById('darkThemeBtn');
 const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
 const categoryFilterLabel = document.getElementById('categoryFilterLabel');
 const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
@@ -165,7 +169,24 @@ async function paintCategoriesList(){
     categoriesList.appendChild(row);
   }
 }
+/* ---------- Settings Modal ---------- */
+settingsBtn.addEventListener('click', async ()=>{
+  await paintCategoriesList();
+  settingsModal.classList.remove('hidden');
+});
+closeSettingsBtn.addEventListener('click', ()=> settingsModal.classList.add('hidden'));
 
+/* ---------- Theme Toggle ---------- */
+function applyTheme(mode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  localStorage.setItem('theme', mode);
+}
+lightThemeBtn.addEventListener('click', ()=> applyTheme('light'));
+darkThemeBtn.addEventListener('click', ()=> applyTheme('dark'));
+
+/* Load saved theme on startup */
+const savedTheme = localStorage.getItem('theme') || 'dark';
+applyTheme(savedTheme);
 document.addEventListener('notes:changed', refresh);
 
 // First load
