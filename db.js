@@ -1,90 +1,115 @@
-// IndexedDB minimal wrapper (notes & categories stores)
-const DB_NAME = 'notes3d-db';
-const DB_VERSION = 1;
+// db.js
+const DB_NAME = 'notes_app_db';
+const DB_VERSION = 2;
 const STORE_NOTES = 'notes';
 const STORE_CATEGORIES = 'categories';
 
-let _dbPromise = null;
+let dbPromise = null;
 
 function openDB() {
-  if (_dbPromise) return _dbPromise;
-  _dbPromise = new Promise((resolve, reject) => {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
+    
     req.onupgradeneeded = (e) => {
-      const db = req.result;
+      const db = e.target.result;
+      
+      // Notes store
       if (!db.objectStoreNames.contains(STORE_NOTES)) {
         const notes = db.createObjectStore(STORE_NOTES, { keyPath: 'id' });
         notes.createIndex('updatedAt', 'updatedAt');
         notes.createIndex('primaryCategoryId', 'primaryCategoryId');
       }
+      
+      // Categories store
       if (!db.objectStoreNames.contains(STORE_CATEGORIES)) {
-        db.createObjectStore(STORE_CATEGORIES, { keyPath: 'id' });
+        const cats = db.createObjectStore(STORE_CATEGORIES, { keyPath: 'id' });
+        cats.createIndex('name', 'name', { unique: false });
       }
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
   });
-  return _dbPromise;
+  return dbPromise;
 }
 
-async function tx(storeName, mode, fn) {
+/* ---------- NOTES ---------- */
+export async function saveNote(note) {
+  const db = await openDB();
+  note.updatedAt = Date.now();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NOTES, 'readwrite');
+    tx.oncomplete = () => resolve(note);
+    tx.onerror = (e) => reject(e.target.error);
+    tx.objectStore(STORE_NOTES).put(note);
+  });
+}
+
+export async function getNote(id) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const t = db.transaction(storeName, mode);
-    const store = t.objectStore(storeName);
-    const r = fn(store);
-    t.oncomplete = () => resolve(r);
-    t.onerror = () => reject(t.error);
-    t.onabort = () => reject(t.error);
+    const tx = db.transaction(STORE_NOTES, 'readonly');
+    const req = tx.objectStore(STORE_NOTES).get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e.target.error);
   });
 }
 
-// NOTES
-export async function saveNote(note) {
-  note.updatedAt = Date.now();
-  await tx(STORE_NOTES, 'readwrite', (s) => s.put(note));
-  return note;
-}
-export async function getNote(id) {
-  return new Promise(async (resolve, reject) => {
-    await tx(STORE_NOTES, 'readonly', (s) => {
-      const req = s.get(id);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  });
-}
-export async function deleteNote(id) {
-  await tx(STORE_NOTES, 'readwrite', (s) => s.delete(id));
-}
 export async function listNotes() {
-  return new Promise(async (resolve, reject) => {
-    const out = [];
-    await tx(STORE_NOTES, 'readonly', (s) => {
-      const req = s.openCursor(null, 'prev'); // newest first if by key; we'll sort later by updatedAt
-      req.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) { out.push(cursor.value); cursor.continue(); }
-        else {
-          out.sort((a,b)=> (b.updatedAt||0) - (a.updatedAt||0));
-          resolve(out);
-        }
-      };
-      req.onerror = () => reject(req.error);
-    });
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NOTES, 'readonly');
+    const req = tx.objectStore(STORE_NOTES).getAll();
+    req.onsuccess = () => resolve(req.result.sort((a, b) => b.updatedAt - a.updatedAt));
+    req.onerror = (e) => reject(e.target.error);
   });
 }
 
-// CATEGORIES
-export async function saveCategory(cat) { await tx(STORE_CATEGORIES, 'readwrite', (s)=>s.put(cat)); return cat; }
-export async function listCategories() {
-  return new Promise(async (resolve, reject) => {
-    const arr = [];
-    await tx(STORE_CATEGORIES, 'readonly', (s) => {
-      const req = s.openCursor();
-      req.onsuccess = (e) => { const c = e.target.result; if (c) { arr.push(c.value); c.continue(); } else resolve(arr); };
-      req.onerror = () => reject(req.error);
-    });
+export async function deleteNote(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NOTES, 'readwrite');
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+    tx.objectStore(STORE_NOTES).delete(id);
   });
 }
-export async function deleteCategory(id){ await tx(STORE_CATEGORIES, 'readwrite', (s)=>s.delete(id)); }
+
+/* ---------- CATEGORIES ---------- */
+export async function saveCategory(cat) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_CATEGORIES, 'readwrite');
+    tx.oncomplete = () => resolve(cat);
+    tx.onerror = (e) => reject(e.target.error);
+    tx.objectStore(STORE_CATEGORIES).put(cat);
+  });
+}
+
+export async function listCategories() {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_CATEGORIES, 'readonly');
+    const req = tx.objectStore(STORE_CATEGORIES).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+export async function deleteCategory(id) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_CATEGORIES, 'readwrite');
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+    tx.objectStore(STORE_CATEGORIES).delete(id);
+  });
+}
+
+/* ---------- DEFAULT CATEGORIES ---------- */
+export const DEFAULT_CATEGORIES = [
+  { id: 'default-work', name: 'Work', color: '#7da0fa' },
+  { id: 'default-ideas', name: 'Ideas', color: '#f8b26a' },
+  { id: 'default-personal', name: 'Personal', color: '#a0e6a0' }
+];
