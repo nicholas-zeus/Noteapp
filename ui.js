@@ -1,11 +1,12 @@
 import { listNotes, saveNote, listCategories, saveCategory, deleteCategory } from './db.js';
 import { DEFAULT_CATEGORIES, textColorFor } from './color.js';
 import { openEditor, loadNoteIntoEditor } from './editor.js';
-
+const savedTheme = localStorage.getItem('theme') || 'dark';
+applyTheme(savedTheme);
 // Elements
 const cardsView = document.getElementById('cardsView');
 const newNoteBtn = document.getElementById('newNoteBtn');
-const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
+
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
@@ -15,8 +16,7 @@ const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
 const categoryFilterLabel = document.getElementById('categoryFilterLabel');
 const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
 
-const categoriesModal = document.getElementById('categoriesModal');
-const closeCategoriesBtn = document.getElementById('closeCategoriesBtn');
+
 const categoriesList = document.getElementById('categoriesList');
 const newCategoryName = document.getElementById('newCategoryName');
 const newCategoryColor = document.getElementById('newCategoryColor');
@@ -131,11 +131,8 @@ document.addEventListener('categoryFilterChanged', (e)=>{
 });
 
 /* Categories Modal */
-manageCategoriesBtn.addEventListener('click', async ()=>{
-  await paintCategoriesList();
-  categoriesModal.classList.remove('hidden');
-});
-closeCategoriesBtn.addEventListener('click', ()=> categoriesModal.classList.add('hidden'));
+
+
 
 addCategoryBtn.addEventListener('click', async ()=>{
   const name = newCategoryName.value.trim();
@@ -185,8 +182,7 @@ lightThemeBtn.addEventListener('click', ()=> applyTheme('light'));
 darkThemeBtn.addEventListener('click', ()=> applyTheme('dark'));
 
 /* Load saved theme on startup */
-const savedTheme = localStorage.getItem('theme') || 'dark';
-applyTheme(savedTheme);
+
 document.addEventListener('notes:changed', refresh);
 
 // First load
