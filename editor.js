@@ -173,7 +173,7 @@ els.title.addEventListener('input', scheduleAutosave);
 
 // category change
 // open overlay instead of native select
-els.primaryCategorySelect.addEventListener('click', async (e) => {
+/*els.primaryCategorySelect.addEventListener('click', async (e) => {
   e.preventDefault();
   const cats = await listCategories();
   categoryOverlayList.innerHTML = '';
@@ -191,8 +191,8 @@ els.primaryCategorySelect.addEventListener('click', async (e) => {
     categoryOverlayList.appendChild(item);
   });
   categoryOverlay.classList.remove('hidden');
-});
-closeCategoryOverlayBtn.addEventListener('click', () => categoryOverlay.classList.add('hidden'));
+});*/
+/*closeCategoryOverlayBtn.addEventListener('click', () => categoryOverlay.classList.add('hidden'));*/
 
 /* ---------- Dropdown Menu ---------- */
 els.moreMenuBtn.addEventListener('click', e => {
