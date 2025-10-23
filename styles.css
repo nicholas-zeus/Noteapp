@@ -129,10 +129,23 @@ body.editing .app-header{ display:none; }
 @keyframes liftIn{ to{ transform: translateY(0) scale(1); } }
 
 .editor-topbar{
-  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
   padding:10px 12px;
   background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.05));
   border-bottom:1px solid rgba(255,255,255,.06);
+  flex-wrap:nowrap;
+}
+.editor-topbar .title-input{
+  flex:1 1 auto;
+  min-width:0;
+  font-size:15px;
+  font-weight:600;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .toolbar{
   display:flex; flex-wrap:wrap; align-items:center; gap:6px;
@@ -246,3 +259,25 @@ body.editing .app-header{ display:none; }
 .pwa-install-btn.hidden {
   display: none;
 }
+.editor-formatbar{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  flex-wrap:wrap;
+}
+.modal-card.small{ width:min(400px,90vw); }
+.category-list .cat-option{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+}
+.category-list .cat-option:hover{ background:rgba(255,255,255,.1); }
+.cat-swatch{ width:18px; height:18px; border-radius:6px; }

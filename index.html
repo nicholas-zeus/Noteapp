@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Notes</title>
+
   <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#1b2030" />
-<link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="theme-color" content="#1b2030" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="stylesheet" href="styles.css" />
 
   <!-- CodeMirror (CDN) -->
@@ -17,7 +18,6 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        
 </head>
 
 <body>
@@ -39,26 +39,33 @@
   <!-- ======= NOTE EDITOR OVERLAY ======= -->
   <div id="editorOverlay" class="overlay hidden" role="dialog" aria-modal="true">
     <div id="editorPanel" class="editor-panel">
+
       <!-- --- TOP BAR --- -->
       <div class="editor-topbar">
-        <button id="closeEditorBtn" class="icon-btn" title="Back" aria-label="Back">⟵</button>
-        <input id="noteTitle" class="title-input" placeholder="Untitled…" />
-        <select id="primaryCategorySelect" class="select small"></select>
-        <button id="moreMenuBtn" class="icon-btn" title="More">⋮</button>
+        <div class="left">
+          <button id="closeEditorBtn" class="icon-btn" title="Back" aria-label="Back">⟵</button>
+          <input id="noteTitle" class="title-input" placeholder="Untitled…" />
+        </div>
+        <div class="right">
+          <select id="primaryCategorySelect" class="select small"></select>
+          <button id="moreMenuBtn" class="icon-btn" title="More">⋮</button>
+        </div>
+      </div>
+
+      <!-- --- FORMAT BAR (always visible) --- -->
+      <div class="editor-formatbar">
+        <button class="tool" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
+        <button class="tool" data-cmd="italic" title="Italic (Ctrl+I)">I</button>
+        <button class="tool" data-cmd="underline" title="Underline (Ctrl+U)">U</button>
+        <button id="insertCheckboxBtn" class="tool" title="Insert checklist">☑︎</button>
       </div>
 
       <!-- --- EDITORS --- -->
       <div id="richEditor" class="editor" contenteditable="true" spellcheck="true"></div>
       <textarea id="codeEditor" class="code-editor hidden" spellcheck="false"></textarea>
 
-      <!-- --- BOTTOM BAR --- -->
+      <!-- --- SAVE STATUS --- -->
       <div class="editor-bottombar">
-        <div class="bottom-toolbar">
-          <button class="tool" data-cmd="bold" title="Bold (Ctrl+B)">B</button>
-          <button class="tool" data-cmd="italic" title="Italic (Ctrl+I)">I</button>
-          <button class="tool" data-cmd="underline" title="Underline (Ctrl+U)">U</button>
-          <button id="insertCheckboxBtn" class="tool" title="Insert checklist">☑︎</button>
-        </div>
         <div id="saveStatus" class="save-status">Saved ✓</div>
       </div>
     </div>
@@ -71,6 +78,17 @@
       <button id="deleteNoteMenuBtn" class="dropdown-item danger">Delete Note 🗑</button>
     </div>
     <input id="imageInput" type="file" accept="image/*" hidden />
+  </div>
+
+  <!-- ======= CATEGORY OVERLAY (custom list) ======= -->
+  <div id="categoryOverlay" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card small">
+      <div class="modal-header">
+        <h3>Select Category</h3>
+        <button id="closeCategoryOverlayBtn" class="icon-btn">✕</button>
+      </div>
+      <div id="categoryOverlayList" class="category-list"></div>
+    </div>
   </div>
 
   <!-- ======= CATEGORY MANAGER ======= -->

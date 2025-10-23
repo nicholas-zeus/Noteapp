@@ -25,7 +25,9 @@ const els = {
   toggleCodeMenuBtn: document.getElementById('toggleCodeMenuBtn'),
   deleteNoteMenuBtn: document.getElementById('deleteNoteMenuBtn'),
 };
-
+const categoryOverlay = document.getElementById('categoryOverlay');
+const closeCategoryOverlayBtn = document.getElementById('closeCategoryOverlayBtn');
+const categoryOverlayList = document.getElementById('categoryOverlayList');
 let activeNote = null;
 let autosaveTimer = null;
 
@@ -164,16 +166,27 @@ els.rich.addEventListener('input', scheduleAutosave);
 els.title.addEventListener('input', scheduleAutosave);
 
 // category change
-els.primaryCategorySelect.addEventListener('change', async e => {
-  const catId = e.target.value || '';
-  activeNote.primaryCategoryId = catId;
-  await saveNote(activeNote);
+// open overlay instead of native select
+els.primaryCategorySelect.addEventListener('click', async (e) => {
+  e.preventDefault();
   const cats = await listCategories();
-  const cat = cats.find(c => c.id === catId);
-  if (cat) applyEditorTheme(cat.color);
-  els.saveStatus.textContent = 'Saved ✓';
-  document.dispatchEvent(new CustomEvent('notes:changed'));
+  categoryOverlayList.innerHTML = '';
+  cats.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'cat-option';
+    item.innerHTML = `<div class="cat-swatch" style="background:${c.color}"></div><div>${c.name}</div>`;
+    item.addEventListener('click', async () => {
+      activeNote.primaryCategoryId = c.id;
+      await saveNote(activeNote);
+      applyEditorTheme(c.color);
+      categoryOverlay.classList.add('hidden');
+      document.dispatchEvent(new CustomEvent('notes:changed'));
+    });
+    categoryOverlayList.appendChild(item);
+  });
+  categoryOverlay.classList.remove('hidden');
 });
+closeCategoryOverlayBtn.addEventListener('click', () => categoryOverlay.classList.add('hidden'));
 
 /* ---------- Dropdown Menu ---------- */
 els.moreMenuBtn.addEventListener('click', e => {
