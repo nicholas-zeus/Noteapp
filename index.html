@@ -29,7 +29,7 @@
       <div class="cat-swatch tiny"></div>
     </div>
     <div class="spacer"></div>
-    <button id="newNoteBtn" class="btn primary" title="New note">+</button>
+    
     <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
   </div>
 </header>
@@ -49,7 +49,11 @@
         <button id="darkThemeBtn" class="btn ghost">🌙 Dark</button>
       </div>
     </section>
-
+<section class="settings-section">
+  <h4>Console Log</h4>
+  <div id="devConsole" class="dev-console"></div>
+  <button id="clearConsoleBtn" class="btn tiny">Clear Logs</button>
+</section>
     <section class="settings-section">
       <h4>Categories</h4>
       <div id="categoriesList" class="category-list"></div>
@@ -139,7 +143,8 @@
       </div>
     </div>
   </div>
-
+<!-- Floating Action Button -->
+<button id="fabNewNote" class="fab-btn" title="New note">+</button>
   <!-- ======= SCRIPTS ======= -->
   <script type="module" src="app.js"></script>
   <script type="module" src="db.js"></script>

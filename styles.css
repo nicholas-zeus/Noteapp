@@ -377,3 +377,41 @@ body.editing .app-header{ display:none; }
 .theme-options .btn {
   flex: 1;
 }
+.fab-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 22px;
+  width: 58px;
+  height: 58px;
+  font-size: 28px;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.45);
+  z-index: 25000;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.fab-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+.dev-console {
+  height: 120px;
+  overflow-y: auto;
+  background: rgba(0,0,0,.3);
+  color: #00ff7b;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+[data-theme='light'] .dev-console {
+  background: rgba(240,240,240,.9);
+  color: #005522;
+}

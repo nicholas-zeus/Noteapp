@@ -8,8 +8,28 @@ applyTheme(savedTheme);
 
 /* ---------- Elements ---------- */
 const cardsView = document.getElementById('cardsView');
-const newNoteBtn = document.getElementById('newNoteBtn');
-
+const fabNewNote = document.getElementById('fabNewNote');
+fabNewNote.addEventListener('click', async () => {
+  const id = crypto.randomUUID();
+  const firstCat = allCategories[0];
+  const newNote = {
+    id,
+    title: 'Untitled',
+    content: '<p></p>',
+    format: 'richtext',
+    categories: firstCat ? [firstCat.id] : [],
+    primaryCategoryId: firstCat?.id || '',
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+  await saveNote(newNote);
+  await refresh();
+  const cat = firstCat || { color: '#CDE7FF' };
+  const note = allNotes.find(n => n.id === id);
+  openEditor(note, cat.color);
+});
+const devConsole = document.getElementById('devConsole');
+const clearConsoleBtn = document.getElementById('clearConsoleBtn');
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
@@ -219,6 +239,25 @@ darkThemeBtn.addEventListener('click', () => applyTheme('dark'));
 
 /* ---------- Notes Change Refresh ---------- */
 document.addEventListener('notes:changed', refresh);
+/* ---------- Dev Console Overlay ---------- */
+(function interceptConsole() {
+  const originalLog = console.log;
+  console.log = (...args) => {
+    originalLog(...args);
+    const msg = args.map(a => 
+      typeof a === 'object' ? JSON.stringify(a, null, 2) : a
+    ).join(' ');
+    if (devConsole) {
+      const line = document.createElement('div');
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      devConsole.appendChild(line);
+      devConsole.scrollTop = devConsole.scrollHeight;
+    }
+  };
+})();
 
+clearConsoleBtn.addEventListener('click', () => {
+  if (devConsole) devConsole.innerHTML = '';
+});
 /* ---------- First Load ---------- */
 refresh();
