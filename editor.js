@@ -4,7 +4,13 @@ import { recordAudioFlow } from './audio.js';
 
 let codeMirror = null;
 let stopRecording = null;
+const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
+const categoryFilterLabel = document.getElementById('categoryFilterLabel');
+const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
 
+const categorySelectTrigger = document.getElementById('categorySelectTrigger');
+const categorySelectLabel = document.getElementById('categorySelectLabel');
+const categorySelectSwatch = categorySelectTrigger.querySelector('.cat-swatch');
 const els = {
   overlay: document.getElementById('editorOverlay'),
   panel: document.getElementById('editorPanel'),
@@ -16,13 +22,7 @@ const els = {
   imageInput: document.getElementById('imageInput'),
   insertCheckboxBtn: document.getElementById('insertCheckboxBtn'),
   closeBtn: document.getElementById('closeEditorBtn'),
-const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
-const categoryFilterLabel = document.getElementById('categoryFilterLabel');
-const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
 
-const categorySelectTrigger = document.getElementById('categorySelectTrigger');
-const categorySelectLabel = document.getElementById('categorySelectLabel');
-const categorySelectSwatch = categorySelectTrigger.querySelector('.cat-swatch');
   // dropdown menu
   moreMenuBtn: document.getElementById('moreMenuBtn'),
   moreMenu: document.getElementById('moreMenu'),
