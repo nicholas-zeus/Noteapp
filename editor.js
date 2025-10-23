@@ -16,7 +16,13 @@ const els = {
   imageInput: document.getElementById('imageInput'),
   insertCheckboxBtn: document.getElementById('insertCheckboxBtn'),
   closeBtn: document.getElementById('closeEditorBtn'),
+const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
+const categoryFilterLabel = document.getElementById('categoryFilterLabel');
+const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
 
+const categorySelectTrigger = document.getElementById('categorySelectTrigger');
+const categorySelectLabel = document.getElementById('categorySelectLabel');
+const categorySelectSwatch = categorySelectTrigger.querySelector('.cat-swatch');
   // dropdown menu
   moreMenuBtn: document.getElementById('moreMenuBtn'),
   moreMenu: document.getElementById('moreMenu'),
@@ -247,6 +253,67 @@ els.deleteNoteMenuBtn.addEventListener('click', async () => {
 });
 
 els.closeBtn.addEventListener('click', closeEditor);
+// shared overlay logic
+let overlayContext = null; // "filter" or "assign"
+
+async function openCategoryOverlay(context) {
+  overlayContext = context;
+  const cats = await listCategories();
+  categoryOverlayList.innerHTML = '';
+  cats.forEach(c => {
+    const item = document.createElement('div');
+    item.className = 'cat-option';
+    item.innerHTML = `<div class="cat-swatch" style="background:${c.color}"></div><div>${c.name}</div>`;
+    item.addEventListener('click', async () => {
+      categoryOverlay.classList.add('hidden');
+      if (context === 'filter') {
+        // filter mode
+        categoryFilterLabel.textContent = c.name;
+        categoryFilterSwatch.style.background = c.color;
+        document.dispatchEvent(new CustomEvent('categoryFilterChanged', { detail: c.id }));
+      } else if (context === 'assign' && activeNote) {
+        // editor assignment
+        activeNote.primaryCategoryId = c.id;
+        await saveNote(activeNote);
+        applyEditorTheme(c.color);
+        categorySelectLabel.textContent = c.name;
+        categorySelectSwatch.style.background = c.color;
+        document.dispatchEvent(new CustomEvent('notes:changed'));
+      }
+    });
+    categoryOverlayList.appendChild(item);
+  });
+
+  // also add an "All Categories" option for filter view
+  if (context === 'filter') {
+    const allItem = document.createElement('div');
+    allItem.className = 'cat-option';
+    allItem.textContent = 'All Categories';
+    allItem.addEventListener('click', () => {
+      categoryFilterLabel.textContent = 'All Categories';
+      categoryFilterSwatch.style.background = 'transparent';
+      categoryOverlay.classList.add('hidden');
+      document.dispatchEvent(new CustomEvent('categoryFilterChanged', { detail: null }));
+    });
+    categoryOverlayList.prepend(allItem);
+  }
+
+  categoryOverlay.classList.remove('hidden');
+}
+
+categorySelectTrigger.addEventListener('click', (e) => {
+  e.preventDefault();
+  openCategoryOverlay('assign');
+});
+
+categoryFilterTrigger.addEventListener('click', (e) => {
+  e.preventDefault();
+  openCategoryOverlay('filter');
+});
+
+closeCategoryOverlayBtn.addEventListener('click', () => {
+  categoryOverlay.classList.add('hidden');
+});
 
 /* ---------- Export helper ---------- */
 export async function loadNoteIntoEditor(id) {

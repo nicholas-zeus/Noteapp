@@ -6,7 +6,10 @@ import { openEditor, loadNoteIntoEditor } from './editor.js';
 const cardsView = document.getElementById('cardsView');
 const newNoteBtn = document.getElementById('newNoteBtn');
 const manageCategoriesBtn = document.getElementById('manageCategoriesBtn');
-const categoryFilterSelect = document.getElementById('categoryFilterSelect');
+
+const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
+const categoryFilterLabel = document.getElementById('categoryFilterLabel');
+const categoryFilterSwatch = categoryFilterTrigger.querySelector('.cat-swatch');
 
 const categoriesModal = document.getElementById('categoriesModal');
 const closeCategoriesBtn = document.getElementById('closeCategoriesBtn');
@@ -14,7 +17,6 @@ const categoriesList = document.getElementById('categoriesList');
 const newCategoryName = document.getElementById('newCategoryName');
 const newCategoryColor = document.getElementById('newCategoryColor');
 const addCategoryBtn = document.getElementById('addCategoryBtn');
-const primaryCategorySelect = document.getElementById('primaryCategorySelect');
 
 let allNotes = [];
 let allCategories = [];
@@ -26,22 +28,6 @@ async function ensureDefaultCategories(){
     for (const c of DEFAULT_CATEGORIES) await saveCategory(c);
     allCategories = await listCategories();
   }
-}
-
-function renderCategoryFilterDropdown(){
-  categoryFilterSelect.innerHTML = '';
-  const allOpt = document.createElement('option');
-  allOpt.value = '';
-  allOpt.textContent = 'All categories';
-  categoryFilterSelect.appendChild(allOpt);
-
-  for (const c of allCategories) {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.name;
-    categoryFilterSelect.appendChild(opt);
-  }
-  categoryFilterSelect.value = activeFilterId;
 }
 
 function categoryById(id){ return allCategories.find(c=>c.id===id); }
@@ -70,7 +56,6 @@ function renderCards(){
     card.addEventListener('click', async ()=>{
       const note = await loadNoteIntoEditor(n.id);
       openEditor(note, cat.color);
-      primaryCategorySelect.value = note.primaryCategoryId || '';
     });
     cardsView.appendChild(card);
   });
@@ -95,18 +80,20 @@ function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;
 async function refresh(){
   await ensureDefaultCategories();
   allNotes = await listNotes();
-  renderCategoryFilterDropdown();
   renderCards();
-  renderPrimaryCategorySelect();
+  updateCategoryFilterLabel();
 }
 
-function renderPrimaryCategorySelect(){
-  primaryCategorySelect.innerHTML = `<option value="">Uncategorized</option>`;
-  for (const c of allCategories) {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.name;
-    primaryCategorySelect.appendChild(opt);
+function updateCategoryFilterLabel(){
+  if (!activeFilterId) {
+    categoryFilterLabel.textContent = "All Categories";
+    categoryFilterSwatch.style.background = "transparent";
+  } else {
+    const cat = categoryById(activeFilterId);
+    if (cat) {
+      categoryFilterLabel.textContent = cat.name;
+      categoryFilterSwatch.style.background = cat.color;
+    }
   }
 }
 
@@ -130,13 +117,13 @@ newNoteBtn.addEventListener('click', async ()=>{
   const note = allNotes.find(n=>n.id===id);
   const { openEditor } = await import('./editor.js');
   openEditor(note, cat.color);
-  primaryCategorySelect.value = note.primaryCategoryId || '';
 });
 
-/* Dropdown filter */
-categoryFilterSelect.addEventListener('change', ()=>{
-  activeFilterId = categoryFilterSelect.value || '';
+/* Category overlay event listener (from editor.js) */
+document.addEventListener('categoryFilterChanged', (e)=>{
+  activeFilterId = e.detail || '';
   renderCards();
+  updateCategoryFilterLabel();
 });
 
 /* Categories Modal */
@@ -144,14 +131,16 @@ manageCategoriesBtn.addEventListener('click', async ()=>{
   await paintCategoriesList();
   categoriesModal.classList.remove('hidden');
 });
-document.getElementById('closeCategoriesBtn').addEventListener('click', ()=> categoriesModal.classList.add('hidden'));
+closeCategoriesBtn.addEventListener('click', ()=> categoriesModal.classList.add('hidden'));
 
-document.getElementById('addCategoryBtn').addEventListener('click', async ()=>{
+addCategoryBtn.addEventListener('click', async ()=>{
   const name = newCategoryName.value.trim();
   const color = newCategoryColor.value;
   if (!name) return;
   await saveCategory({ id: crypto.randomUUID(), name, color });
-  newCategoryName.value=''; await paintCategoriesList(); await refresh();
+  newCategoryName.value='';
+  await paintCategoriesList();
+  await refresh();
 });
 
 async function paintCategoriesList(){
@@ -170,7 +159,8 @@ async function paintCategoriesList(){
     `;
     row.querySelector('button').addEventListener('click', async ()=>{
       await deleteCategory(c.id);
-      await paintCategoriesList(); await refresh();
+      await paintCategoriesList();
+      await refresh();
     });
     categoriesList.appendChild(row);
   }

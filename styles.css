@@ -151,6 +151,30 @@ body.editing .app-header{ display:none; }
   display:flex; flex-wrap:wrap; align-items:center; gap:6px;
   margin-left:auto;
 }
+.category-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,.05);
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s ease;
+}
+.category-trigger:hover {
+  background: rgba(255,255,255,.1);
+}
+.category-trigger.small {
+  padding: 5px 8px;
+}
+.cat-swatch.tiny {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,.2);
+}
 .title-input{ flex:1; font-size:16px; font-weight:600; }
 
 

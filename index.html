@@ -25,7 +25,10 @@
   <header class="app-header" id="appHeader">
     <div class="header-actions">
       <label class="label" for="categoryFilterSelect">Category</label>
-      <select id="categoryFilterSelect" class="select"></select>
+<div id="categoryFilterTrigger" class="category-trigger">
+  <span id="categoryFilterLabel">All Categories</span>
+  <div class="cat-swatch tiny"></div>
+</div>
       <div class="spacer"></div>
       <button id="newNoteBtn" class="btn primary" title="New note">+</button>
       <button id="manageCategoriesBtn" class="btn ghost">Categories</button>
@@ -47,7 +50,10 @@
           <input id="noteTitle" class="title-input" placeholder="Untitled…" />
         </div>
         <div class="right">
-          <select id="primaryCategorySelect" class="select small"></select>
+         <div id="categorySelectTrigger" class="category-trigger small">
+  <span id="categorySelectLabel">Select Category</span>
+  <div class="cat-swatch tiny"></div>
+</div>
           <button id="moreMenuBtn" class="icon-btn" title="More">⋮</button>
         </div>
       </div>
