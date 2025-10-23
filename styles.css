@@ -225,3 +225,24 @@ body.editing .app-header{ display:none; }
   word-break: break-word;
   overflow-wrap: break-word;
 }
+.pwa-install-btn {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  z-index: 30000;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.pwa-install-btn:hover {
+  transform: translateY(-2px);
+}
+.pwa-install-btn.hidden {
+  display: none;
+}
