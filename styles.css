@@ -664,3 +664,108 @@ input[type="search"]::-ms-reveal {
   width: 0;
   height: 0;
 }
+/* ---------- Material theme overrides for note editor ---------- */
+[data-theme='material'] .editor-panel {
+  background: var(--surface);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Editor topbar: flat with divider instead of gradient */
+[data-theme='material'] .editor-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: none;
+}
+
+/* Format bar: subtle background and border */
+[data-theme='material'] .editor-formatbar {
+  background: var(--surface-2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Main editable area */
+[data-theme='material'] .editor {
+  background: var(--surface);
+  color: var(--text);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: none;
+}
+
+/* Code editor (CodeMirror background) */
+[data-theme='material'] .CodeMirror {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Bottom bar */
+[data-theme='material'] .editor-bottombar {
+  background: var(--surface-2);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--muted);
+}
+
+/* Buttons inside editor */
+[data-theme='material'] .tool,
+[data-theme='material'] .icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+}
+[data-theme='material'] .tool:hover,
+[data-theme='material'] .icon-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Checklists, images, audio chips inside notes */
+[data-theme='material'] .editor .audio-chip {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--surface-2);
+}
+[data-theme='material'] .editor img {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Category trigger inside editor topbar */
+[data-theme='material'] .category-trigger {
+  background: var(--surface-2);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+[data-theme='material'] .category-trigger:hover {
+  background: #eef1f5;
+}
+
+/* Dropdown menus (3-dot menu) */
+[data-theme='material'] .dropdown {
+  background: var(--surface);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+[data-theme='material'] .dropdown-item:hover {
+  background: #eef1f5;
+}
+
+/* Modal backdrop lighter for Material */
+[data-theme='material'] .overlay {
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+}
+/* ---------- Category filter label visibility fixes ---------- */
+
+/* Default (dark theme) already OK — we only need to override for light/material */
+[data-theme='light'] #categoryFilterLabel {
+  color: #111 !important;
+}
+
+[data-theme='material'] #categoryFilterLabel {
+  color: var(--text) !important;
+}
+
+/* Also ensure the little color square (swatch) looks correct */
+[data-theme='material'] #categoryFilterTrigger .cat-swatch {
+  border: 1px solid rgba(0,0,0,.15);
+}
