@@ -73,7 +73,7 @@ function renderCards() {
     const cat = categoryById(n.primaryCategoryId) || { color: '#1b2030', name: 'Uncategorized' };
     const card = document.createElement('article');
     card.className = 'card';
-    card.style.background = `linear-gradient(180deg, ${cat.color}C0, rgba(0,0,0,.1))`;
+    card.style.background = `linear-gradient(rgba(255,255,255,0.3), ${cat.color})`;
     card.style.color = textColorFor(cat.color);
     card.style.animation = `fadeIn .25s ease ${i * 0.02}s both`;
     card.innerHTML = `

@@ -274,11 +274,23 @@ body.editing .app-header{ display:none; }
 .category-swatch{ width:18px; height:18px; border-radius:6px; border:1px solid rgba(0,0,0,.2); }
 .category-form{ display:flex; gap:8px; padding: 12px 6px 4px; }
 /* Dropdown menu */
-.dropdown {
+/*.dropdown {
   position: absolute;
   right: 12px;
   top: 48px;
   transform: translateY(4px);
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  display: flex;
+  flex-direction: column;
+  z-index: 20000;
+}*/
+.dropdown {
+  position: absolute;
+  top: 56px; /* just below the editor top bar */
+  right: 16px; /* aligns with editorPanel's right padding */
   background: var(--surface);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 10px;
