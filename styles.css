@@ -546,3 +546,21 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration { display: none; }
 input[type="search"]::-ms-clear,
 input[type="search"]::-ms-reveal { display: none; width: 0; height: 0; }
+/* ---------- Fix: ensure Material theme overrides dark defaults ---------- */
+[data-theme='material'] #noteTitle.title-input {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid rgba(0,0,0,.1);
+  box-shadow: none;
+}
+
+[data-theme='material'] #richEditor.editor {
+  background: var(--surface);
+  color: var(--text);
+  border-top: 1px solid rgba(0,0,0,.05);
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+[data-theme='material'] #categorySelectLabel {
+  color: var(--text) !important;
+}
