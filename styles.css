@@ -229,13 +229,16 @@ body.editing .app-header{ display:none; }
 .title-input{ flex:1; font-size:16px; font-weight:600; }
 
 
-.editor{
-  flex:1; overflow:auto; padding: 18px 18px 24px;
-  background: linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+.editor {
+  flex: 1;
+  overflow: auto;
+  padding: 18px 18px 24px;
+  background: var(--surface);
   line-height: 1.6;
-  border-top:1px solid rgba(255,255,255,.03);
-  border-bottom:1px solid rgba(255,255,255,.03);
+  border-top: 1px solid rgba(255,255,255,.03);
+  border-bottom: 1px solid rgba(255,255,255,.03);
 }
+
 .editor p{ margin: 0 0 10px; }
 .editor img{ max-width:100%; border-radius: 12px; box-shadow: var(--shadow); }
 .editor .audio-chip{ margin:10px 0; padding:12px; border:1px solid rgba(255,255,255,.12); border-radius:12px; background: rgba(255,255,255,.04); }
@@ -273,8 +276,9 @@ body.editing .app-header{ display:none; }
 /* Dropdown menu */
 .dropdown {
   position: absolute;
-  right: 20px;
-  top: 70px;
+  right: 12px;
+  top: 48px;
+  transform: translateY(4px);
   background: var(--surface);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 10px;
@@ -283,6 +287,7 @@ body.editing .app-header{ display:none; }
   flex-direction: column;
   z-index: 20000;
 }
+
 .dropdown-item {
   padding: 10px 14px;
   text-align: left;
@@ -414,4 +419,10 @@ body.editing .app-header{ display:none; }
 [data-theme='light'] .dev-console {
   background: rgba(240,240,240,.9);
   color: #005522;
+}
+body.editing .fab-btn {
+  display: none !important;
+}
+[data-theme='light'] #categoryFilterLabel {
+  color: #000 !important;
 }

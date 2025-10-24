@@ -132,26 +132,6 @@ function updateCategoryFilterLabel() {
   }
 }
 
-/* ---------- New note ---------- */
-fabNewNote.addEventListener('click', async () => {
-  const id = crypto.randomUUID();
-  const firstCat = allCategories[0];
-  const newNote = {
-    id,
-    title: 'Untitled',
-    content: '<p></p>',
-    format: 'richtext',
-    categories: firstCat ? [firstCat.id] : [],
-    primaryCategoryId: firstCat?.id || '',
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
-  await saveNote(newNote);
-  await refresh();
-  const cat = firstCat || { color: '#CDE7FF' };
-  const note = allNotes.find(n => n.id === id);
-  openEditor(note, cat.color);
-});
 
 /* ---------- Category overlay event listener (from editor.js) ---------- */
 document.addEventListener('categoryFilterChanged', e => {
