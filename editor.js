@@ -107,11 +107,25 @@ if (activeNote.primaryCategoryId === undefined)
 
 /* ---------- Theme ---------- */
 function applyEditorTheme() {
-  // Use the current theme’s text color, not the category
   const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const defaultText = theme === 'light' ? '#111' : '#e9ecf1';
-  const border = theme === 'light' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.12)';
-  const background = theme === 'light' ? '#ffffff' : '#1b2030';
+
+  let defaultText, border, background;
+  switch (theme) {
+    case 'light':
+      defaultText = '#111';
+      border = 'rgba(0,0,0,.1)';
+      background = '#ffffff';
+      break;
+    case 'material':
+      defaultText = '#1e1f23';
+      border = 'rgba(0,0,0,.1)';
+      background = '#ffffff';
+      break;
+    default: // dark
+      defaultText = '#e9ecf1';
+      border = 'rgba(255,255,255,.12)';
+      background = '#1b2030';
+  }
 
   els.panel.style.background = background;
   els.panel.style.color = defaultText;
