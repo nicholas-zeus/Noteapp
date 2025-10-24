@@ -38,29 +38,79 @@
   --shadow-2: 0 20px 50px rgba(0,0,0,.15);
 }
 [data-theme='material'] {
-  /* Tonal palette leaning purple/indigo */
-  --bg: #0f0d14;            /* base bg */
-  --surface: #16131d;       /* surface container low */
-  --surface-2: #1c1826;     /* surface container */
-  --text: #ece7f6;
-  --muted: #b8b1c8;
-  --primary: #6750A4;       /* M3 Baseline primary */
-  --ring: rgba(103,80,164,.25);
-  --shadow: 0 8px 24px rgba(0,0,0,.35);
-  --shadow-2: 0 20px 50px rgba(0,0,0,.45);
-  --radius: 18px;
+  --bg: #f5f6f8;                /* neutral page background */
+  --surface: #ffffff;           /* main card / panel background */
+  --surface-2: #fafbfc;         /* secondary surface tone */
+  --text: #1e1f23;              /* primary text */
+  --muted: #666b73;             /* muted text */
+  --primary: #3367d6;           /* blue accent */
+  --ring: rgba(51,103,214,.25); /* focus ring */
+  --shadow: 0 1px 4px rgba(0,0,0,.08);
+  --shadow-2: 0 4px 12px rgba(0,0,0,.12);
+  --radius: 12px;
   --header-h: 64px;
 }
 
 /* Material background vibe */
 [data-theme='material'] body {
-  background: radial-gradient(1200px 600px at 20% -10%, rgba(103,80,164,.35), var(--bg));
+  background: var(--bg);
+}
+[data-theme='material'] .card,
+[data-theme='material'] .modal-card,
+[data-theme='material'] .editor-panel {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
 }
 
-/* Slightly glassy header in Material */
+/* Header: flat with bottom divider */
 [data-theme='material'] .app-header {
-  background: linear-gradient(180deg, rgba(28,24,38,.92), rgba(28,24,38,.75));
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: var(--surface);
+  border-bottom: 1px solid rgba(0,0,0,.08);
+  backdrop-filter: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+
+/* Buttons */
+[data-theme='material'] .btn {
+  background: var(--surface-2);
+  border: 1px solid rgba(0,0,0,.08);
+  color: var(--text);
+  box-shadow: none;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+[data-theme='material'] .btn:hover {
+  background: #eef1f5;
+  box-shadow: 0 2px 4px rgba(0,0,0,.06);
+}
+
+/* Inputs & selects */
+[data-theme='material'] .input,
+[data-theme='material'] .select,
+[data-theme='material'] .title-input {
+  background: var(--surface);
+  border: 1px solid rgba(0,0,0,.1);
+  color: var(--text);
+}
+[data-theme='material'] .input:focus,
+[data-theme='material'] .select:focus,
+[data-theme='material'] .title-input:focus {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+/* Category swatch border refinement */
+[data-theme='material'] .cat-swatch,
+[data-theme='material'] .category-swatch {
+  border: 1px solid rgba(0,0,0,.15);
+}
+
+/* Scrollbars match subtle style */
+[data-theme='material'] ::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.25);
+}
+[data-theme='material'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,.35);
 }
 
 /* Card / modal / editor elevation with Material feel */
