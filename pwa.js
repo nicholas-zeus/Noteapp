@@ -6,7 +6,7 @@ installBtn.className = "pwa-install-btn hidden";
 document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(installBtn);
 });
-
+installBtn.classList.add("hidden");
 function isStandalone(){
   return window.matchMedia('(display-mode: standalone)').matches
       || window.navigator.standalone === true;
