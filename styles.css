@@ -769,3 +769,27 @@ input[type="search"]::-ms-reveal {
 [data-theme='material'] #categoryFilterTrigger .cat-swatch {
   border: 1px solid rgba(0,0,0,.15);
 }
+/* ---------- Fix: rich editor adopts Material background ---------- */
+[data-theme='material'] #richEditor {
+  background: var(--surface);
+  color: var(--text);
+  border-top: 1px solid rgba(0,0,0,.05);
+  border-bottom: 1px solid rgba(0,0,0,.05);
+  box-shadow: none;
+}
+/* ---------- Ensure categoryFilterLabel resets correctly across themes ---------- */
+
+/* Explicitly define for dark theme */
+[data-theme='dark'] #categoryFilterLabel {
+  color: #fff !important;
+}
+
+/* Explicitly define for light theme */
+[data-theme='light'] #categoryFilterLabel {
+  color: #000 !important;
+}
+
+/* Explicitly define for material theme */
+[data-theme='material'] #categoryFilterLabel {
+  color: var(--text) !important;
+}
