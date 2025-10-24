@@ -96,8 +96,9 @@ async function saveCurrentNote() {
 
   activeNote.title = els.title.value.trim() || 'Untitled';
   activeNote.content = content;
-  activeNote.primaryCategoryId =
-    document.getElementById('primaryCategorySelect').value || '';
+if (activeNote.primaryCategoryId === undefined)
+  activeNote.primaryCategoryId = '';
+
 
   await saveNote(activeNote);
   els.saveStatus.textContent = 'Saved ✓';

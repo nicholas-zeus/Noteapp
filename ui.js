@@ -133,7 +133,7 @@ function updateCategoryFilterLabel() {
 }
 
 /* ---------- New note ---------- */
-newNoteBtn.addEventListener('click', async () => {
+fabNewNote.addEventListener('click', async () => {
   const id = crypto.randomUUID();
   const firstCat = allCategories[0];
   const newNote = {
