@@ -1,40 +1,15 @@
-const CACHE_NAME = "notes-cache-v1";
-const FILES_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./db.js",
-  "./color.js",
-  "./editor.js",
-  "./ui.js",
-  "./audio.js",
-  "./sync.js",
-  "./manifest.json"
-];
-
-self.addEventListener("install", (evt) => {
-  evt.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
-  );
+// service-worker.js — no-cache version
+self.addEventListener('install', (evt) => {
+  // Immediately activate new version
   self.skipWaiting();
 });
 
-self.addEventListener("activate", (evt) => {
-  evt.waitUntil(
-    caches.keys().then((keyList) =>
-      Promise.all(
-        keyList.map((key) => key !== CACHE_NAME && caches.delete(key))
-      )
-    )
-  );
-  self.clients.claim();
+self.addEventListener('activate', (evt) => {
+  // Take control of open pages immediately
+  evt.waitUntil(clients.claim());
 });
 
-self.addEventListener("fetch", (evt) => {
-  evt.respondWith(
-    caches.match(evt.request).then(
-      (response) => response || fetch(evt.request)
-    )
-  );
+self.addEventListener('fetch', (evt) => {
+  // Always bypass cache and fetch from network
+  evt.respondWith(fetch(evt.request).catch(() => fetch(evt.request)));
 });

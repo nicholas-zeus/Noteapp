@@ -108,8 +108,7 @@ if (activeNote.primaryCategoryId === undefined)
 /* ---------- Theme ---------- */
 function applyEditorTheme(bgHex) {
   const textHex = textColorFor(bgHex);
-  els.panel.style.background = `linear-gradient(180deg, ${bgHex}40, rgba(0,0,0,.35))`;
-  els.panel.style.color = textHex;
+
   els.rich.style.background = 'transparent';
   els.rich.style.color = textHex;
   document
