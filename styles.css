@@ -287,10 +287,20 @@ body.editing .app-header{ display:none; }
   flex-direction: column;
   z-index: 20000;
 }*/
-.dropdown {
+/*.dropdown {
   position: absolute;
-  top: 56px; /* just below the editor top bar */
-  right: 16px; /* aligns with editorPanel's right padding */
+  top: 56px;
+  right: 16px; 
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  display: flex;
+  flex-direction: column;
+  z-index: 20000;
+}*/
+.dropdown {
+  position: fixed;
   background: var(--surface);
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 10px;

@@ -203,8 +203,25 @@ els.title.addEventListener('input', scheduleAutosave);
 /* ---------- Dropdown Menu ---------- */
 els.moreMenuBtn.addEventListener('click', e => {
   e.stopPropagation();
+
+  // Toggle visibility
+  const wasHidden = els.moreMenu.classList.contains('hidden');
   els.moreMenu.classList.toggle('hidden');
+
+  if (wasHidden) {
+    // Get button’s position relative to viewport
+    const rect = els.moreMenuBtn.getBoundingClientRect();
+    const menu = els.moreMenu;
+
+    // Attach the dropdown right below the button
+    menu.style.position = 'fixed';
+    menu.style.top = `${rect.bottom + 6}px`;
+    menu.style.left = `${rect.left - menu.offsetWidth + rect.width}px`;
+    menu.style.right = 'auto';
+    menu.style.zIndex = 20000;
+  }
 });
+
 document.addEventListener('click', () => els.moreMenu.classList.add('hidden'));
 
 // menu actions
