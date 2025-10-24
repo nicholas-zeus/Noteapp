@@ -183,14 +183,14 @@ body.editing .app-header{ display:none; }
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:8px;
+  gap:10px;
   padding:10px 12px;
   background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.05));
   border-bottom:1px solid rgba(255,255,255,.06);
-  flex-wrap:nowrap;
+  /*flex-wrap:nowrap;*/
 }
 .editor-topbar .title-input{
-  flex:1 1 auto;
+  flex:1;
   min-width:0;
   font-size:15px;
   font-weight:600;
@@ -218,6 +218,9 @@ body.editing .app-header{ display:none; }
   background: rgba(255,255,255,.1);
 }
 .category-trigger.small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 5px 8px;
 }
 .cat-swatch.tiny {
@@ -448,3 +451,7 @@ body.editing .fab-btn {
 [data-theme='light'] #categoryFilterLabel {
   color: #000 !important;
 }
+@media (max-width: 600px) {
+  #categorySelectLabel {
+    display: none;
+  }
