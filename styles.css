@@ -548,3 +548,13 @@ input[type="search"]::-ms-reveal {
   width: 0;
   height: 0;
 }
+#cardsView {
+  min-height: 100vh;
+  background: radial-gradient(1200px 600px at 20% -10%, #374883, var(--bg));
+  transition: background .3s ease;
+}
+
+/* Light theme override */
+[data-theme='light'] #cardsView {
+  background: radial-gradient(1200px 600px at 20% -10%, #b5c6fd, var(--bg));
+}
