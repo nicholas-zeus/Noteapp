@@ -20,17 +20,38 @@
 
 <body>
   <!-- ======= HEADER / CARD VIEW ======= -->
- <header class="app-header" id="appHeader">
+<header class="app-header" id="appHeader">
   <div class="header-actions">
+
+    <!-- Category filter trigger (unchanged) -->
     <div id="categoryFilterTrigger" class="category-trigger">
       <span id="categoryFilterLabel">All Categories</span>
       <div class="cat-swatch tiny"></div>
     </div>
+
+    <!-- Desktop search (always visible on desktop) -->
+    <div class="search-wrap" id="searchWrap">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input id="searchInput" class="search-input" type="search" placeholder="Search notes…" autocomplete="off" />
+      <button id="searchResetBtn" class="search-reset-btn" aria-label="Clear search" title="Clear">✖</button>
+    </div>
+
     <div class="spacer"></div>
-    
+
+    <!-- Mobile search entry point (icons only on mobile) -->
+    <button id="searchOpenBtn" class="icon-btn mobile-only" title="Search" aria-label="Search">🔍</button>
+
+    <!-- Settings gear -->
     <button id="settingsBtn" class="icon-btn" title="Settings">⚙️</button>
   </div>
+
+  <!-- Mobile search bar mode (slides in, replaces header content) -->
+  <div class="mobile-search-bar" id="mobileSearchBar" aria-hidden="true">
+    <input id="mobileSearchInput" class="mobile-search-input" type="search" placeholder="Search notes…" autocomplete="off" />
+    <button id="mobileSearchCloseBtn" class="icon-btn" aria-label="Close search" title="Close">✖</button>
+  </div>
 </header>
+
 
 <!-- Settings Modal -->
 <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true">

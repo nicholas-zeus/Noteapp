@@ -28,6 +28,32 @@ fabNewNote.addEventListener('click', async () => {
   const note = allNotes.find(n => n.id === id);
   openEditor(note, cat.color);
 });
+let searchTerm = '';
+
+function plainTextFromHtml(html){
+  const div = document.createElement('div');
+  div.innerHTML = html || '';
+  return (div.textContent || '').trim();
+}
+
+function getVisibleNotes(){
+  // category filter
+  let notes = activeFilterId
+    ? allNotes.filter(n => n.primaryCategoryId === activeFilterId)
+    : allNotes;
+
+  // search filter (case-insensitive) on title + content text
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    notes = notes.filter(n => {
+      const t = (n.title || '').toLowerCase();
+      const c = plainTextFromHtml(n.content || '').toLowerCase();
+      return t.includes(q) || c.includes(q);
+    });
+  }
+  return notes;
+}
+
 const devConsole = document.getElementById('devConsole');
 const clearConsoleBtn = document.getElementById('clearConsoleBtn');
 const settingsBtn = document.getElementById('settingsBtn');
@@ -61,13 +87,60 @@ async function ensureDefaultCategories() {
 function categoryById(id) {
   return allCategories.find(c => c.id === id);
 }
+// Search elements
+const searchWrap = document.getElementById('searchWrap');
+const searchInput = document.getElementById('searchInput');
+const searchResetBtn = document.getElementById('searchResetBtn');
+
+const searchOpenBtn = document.getElementById('searchOpenBtn'); // mobile icon
+const mobileSearchBar = document.getElementById('mobileSearchBar');
+const mobileSearchInput = document.getElementById('mobileSearchInput');
+const mobileSearchCloseBtn = document.getElementById('mobileSearchCloseBtn');
+
+// Desktop: live filter
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    searchTerm = searchInput.value.trim();
+    renderCards();
+  });
+  searchResetBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchTerm = '';
+    renderCards();
+    searchInput.focus();
+  });
+}
+
+// Mobile: open/close + live filter
+if (searchOpenBtn) {
+  searchOpenBtn.addEventListener('click', () => {
+    document.body.classList.add('search-active');
+    mobileSearchBar.setAttribute('aria-hidden', 'false');
+    mobileSearchInput.value = searchTerm;
+    setTimeout(() => mobileSearchInput.focus(), 0);
+  });
+}
+if (mobileSearchCloseBtn) {
+  mobileSearchCloseBtn.addEventListener('click', () => {
+    mobileSearchInput.value = '';
+    searchTerm = '';
+    renderCards();
+    mobileSearchBar.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('search-active');
+  });
+}
+if (mobileSearchInput) {
+  mobileSearchInput.addEventListener('input', () => {
+    searchTerm = mobileSearchInput.value.trim();
+    renderCards();
+  });
+}
 
 /* ---------- Cards ---------- */
 function renderCards() {
   cardsView.innerHTML = '';
-  const notes = activeFilterId
-    ? allNotes.filter(n => n.primaryCategoryId === activeFilterId)
-    : allNotes;
+  const notes = getVisibleNotes();
+  
 
   notes.forEach((n, i) => {
     const cat = categoryById(n.primaryCategoryId) || { color: '#1b2030', name: 'Uncategorized' };
@@ -179,11 +252,18 @@ addCategoryBtn.addEventListener('click', async () => {
 settingsBtn.addEventListener('click', async () => {
   await paintCategoriesList();
   settingsModal.classList.remove('hidden');
+  document.body.classList.add('settings-open');   // NEW
 });
-closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+closeSettingsBtn.addEventListener('click', () => {
+  settingsModal.classList.add('hidden');
+  document.body.classList.remove('settings-open'); // NEW
+});
 
 window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') settingsModal.classList.add('hidden');
+  if (e.key === 'Escape') {
+    settingsModal.classList.add('hidden');
+    document.body.classList.remove('settings-open'); // NEW
+  }
 });
 
 /* ---------- Theme Toggle ---------- */

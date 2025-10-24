@@ -453,5 +453,79 @@ body.editing .fab-btn {
 }
 @media (max-width: 600px) {
   #categorySelectLabel {
-    display: none;
+    display: none;}
   }
+  /* ---------- Search (desktop) ---------- */
+.search-wrap{
+  display:flex; align-items:center; gap:8px;
+  border:1px solid var(--ring);
+  background: rgba(255,255,255,.04);
+  border-radius: 12px; padding: 6px 8px;
+  max-width: 420px; width: 100%;
+}
+.search-wrap .search-icon{ opacity:.75; }
+.search-input{
+  flex:1; min-width:0; border:none; outline:none;
+  background: transparent; color: var(--text);
+  font-size: 14px;
+}
+.search-reset-btn{
+  border:none; background: transparent; color: var(--text);
+  opacity:.7; cursor:pointer; font-size:14px; line-height:1;
+}
+.search-reset-btn:hover{ opacity: 1; }
+
+/* ---------- Mobile search controls ---------- */
+.mobile-only{ display:none; }
+.mobile-search-bar{
+  position: absolute; inset: 0;
+  display: flex; align-items:center; gap:8px;
+  padding: 8px 12px; height: var(--header-h);
+  background: var(--surface);
+  transform: translateY(-100%); opacity: 0; pointer-events: none;
+  transition: transform .25s ease, opacity .25s ease;
+}
+.mobile-search-input{
+  flex:1; min-width:0; border:1px solid var(--ring); border-radius: 12px;
+  background: rgba(255,255,255,.04); color: var(--text);
+  padding: 9px 12px; font-size: 15px;
+}
+
+/* When body has .search-active, slide the mobile bar in */
+body.search-active .mobile-search-bar{
+  transform: translateY(0); opacity: 1; pointer-events: auto;
+}
+/* When mobile search is open, hide the regular header-actions row */
+body.search-active .app-header .header-actions{ visibility:hidden; }
+
+/* Mobile breakpoints */
+@media (max-width: 720px){
+  .search-wrap{ display:none; }        /* hide desktop search on mobile */
+  .mobile-only{ display:inline-flex; } /* show mobile search icon */
+}
+
+/* ---------- Hide FAB in editor or settings overlay ---------- */
+body.editing .fab-btn,
+body.settings-open .fab-btn{
+  display: none !important;
+}
+
+/* ---------- 3-dot dropdown anchored to editor panel top-right ---------- */
+.editor-panel{ position: relative; }
+.dropdown {
+  position: absolute;
+  top: 56px;           /* just under the editor top bar */
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  display: flex; flex-direction: column;
+  z-index: 20000;
+}
+
+/* ---------- Card gradient (unified, light over category color) ---------- */
+.card{
+  /* fallback props remain as-is; only override the background */
+  background: none; /* ensure we control it from JS if needed */
+}
