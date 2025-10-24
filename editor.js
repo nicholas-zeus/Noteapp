@@ -106,19 +106,25 @@ if (activeNote.primaryCategoryId === undefined)
 }
 
 /* ---------- Theme ---------- */
-function applyEditorTheme(bgHex) {
-  const textHex = textColorFor(bgHex);
+function applyEditorTheme() {
+  // Use the current theme’s text color, not the category
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const defaultText = theme === 'light' ? '#111' : '#e9ecf1';
+  const border = theme === 'light' ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.12)';
+  const background = theme === 'light' ? '#ffffff' : '#1b2030';
 
-  els.rich.style.background = 'transparent';
-  els.rich.style.color = textHex;
-  document
-    .querySelectorAll('.tool,.title-input,.select')
-    .forEach(el => {
-      el.style.color = textHex;
-      el.style.borderColor = textHex + '33';
-      el.style.background = 'rgba(0,0,0,.08)';
-    });
+  els.panel.style.background = background;
+  els.panel.style.color = defaultText;
+  els.rich.style.background = background;
+  els.rich.style.color = defaultText;
+
+  document.querySelectorAll('.tool, .title-input, .select').forEach(el => {
+    el.style.color = defaultText;
+    el.style.borderColor = border;
+    el.style.background = 'transparent';
+  });
 }
+
 
 /* ---------- Editing Tools ---------- */
 function wrapSelection(cmd) {
