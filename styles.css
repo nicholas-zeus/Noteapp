@@ -37,7 +37,39 @@
   --shadow: 0 8px 24px rgba(0,0,0,.12);
   --shadow-2: 0 20px 50px rgba(0,0,0,.15);
 }
+[data-theme='material'] {
+  /* Tonal palette leaning purple/indigo */
+  --bg: #0f0d14;            /* base bg */
+  --surface: #16131d;       /* surface container low */
+  --surface-2: #1c1826;     /* surface container */
+  --text: #ece7f6;
+  --muted: #b8b1c8;
+  --primary: #6750A4;       /* M3 Baseline primary */
+  --ring: rgba(103,80,164,.25);
+  --shadow: 0 8px 24px rgba(0,0,0,.35);
+  --shadow-2: 0 20px 50px rgba(0,0,0,.45);
+  --radius: 18px;
+  --header-h: 64px;
+}
 
+/* Material background vibe */
+[data-theme='material'] body {
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(103,80,164,.35), var(--bg));
+}
+
+/* Slightly glassy header in Material */
+[data-theme='material'] .app-header {
+  background: linear-gradient(180deg, rgba(28,24,38,.92), rgba(28,24,38,.75));
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+/* Card / modal / editor elevation with Material feel */
+:root {
+  --elev-1: 0 2px 6px rgba(0,0,0,.25);
+  --elev-2: 0 4px 12px rgba(0,0,0,.3);
+  --elev-3: 0 10px 24px rgba(0,0,0,.4);
+  --elev-4: 0 16px 32px rgba(0,0,0,.45);
+}
 /* UNIVERSAL BASE */
 body {
   background: var(--bg);
@@ -396,7 +428,35 @@ body.editing .app-header{ display:none; }
   font-size: 20px;
   background: transparent;
 }
+.card, .modal-card, .editor-panel { box-shadow: var(--elev-2); border-radius: var(--radius); }
+.card:hover { box-shadow: var(--elev-3); transform: translateY(-2px); }
+.modal-card { box-shadow: var(--elev-4); }
+.btn { box-shadow: var(--elev-1); }
 
+/* === Make only the Categories section scroll inside the Settings modal === */
+#settingsModal .modal-card { 
+  display: flex; 
+  flex-direction: column; 
+  max-height: 92vh; 
+  overflow: hidden; 
+}
+#settingsModal .settings-section[data-section="categories"] {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+#settingsModal .settings-section[data-section="categories"]::-webkit-scrollbar {
+  width: 6px;
+}
+#settingsModal .settings-section[data-section="categories"]::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 6px;
+}
+#settingsModal .settings-section[data-section="categories"]::-webkit-scrollbar-track {
+  background: transparent;
+}
 .settings-section {
   margin-top: 16px;
   padding-top: 8px;

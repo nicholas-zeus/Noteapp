@@ -54,13 +54,13 @@ function getVisibleNotes(){
   return notes;
 }
 
-const devConsole = document.getElementById('devConsole');
-const clearConsoleBtn = document.getElementById('clearConsoleBtn');
+
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsModal = document.getElementById('settingsModal');
 const closeSettingsBtn = document.getElementById('closeSettingsBtn');
 const lightThemeBtn = document.getElementById('lightThemeBtn');
 const darkThemeBtn = document.getElementById('darkThemeBtn');
+const materialThemeBtn = document.getElementById('materialThemeBtn');
 
 const categoryFilterTrigger = document.getElementById('categoryFilterTrigger');
 const categoryFilterLabel = document.getElementById('categoryFilterLabel');
@@ -70,6 +70,11 @@ const categoriesList = document.getElementById('categoriesList');
 const newCategoryName = document.getElementById('newCategoryName');
 const newCategoryColor = document.getElementById('newCategoryColor');
 const addCategoryBtn = document.getElementById('addCategoryBtn');
+// Live-update color box background
+newCategoryColor.addEventListener('input', (e) => {
+  e.target.style.background = e.target.value;
+});
+
 
 let allNotes = [];
 let allCategories = [];
@@ -296,28 +301,10 @@ function rgbToHex(rgb) {
 
 lightThemeBtn.addEventListener('click', () => applyTheme('light'));
 darkThemeBtn.addEventListener('click', () => applyTheme('dark'));
-
+materialThemeBtn.addEventListener('click', () => applyTheme('material'));
 /* ---------- Notes Change Refresh ---------- */
 document.addEventListener('notes:changed', refresh);
-/* ---------- Dev Console Overlay ---------- */
-(function interceptConsole() {
-  const originalLog = console.log;
-  console.log = (...args) => {
-    originalLog(...args);
-    const msg = args.map(a => 
-      typeof a === 'object' ? JSON.stringify(a, null, 2) : a
-    ).join(' ');
-    if (devConsole) {
-      const line = document.createElement('div');
-      line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-      devConsole.appendChild(line);
-      devConsole.scrollTop = devConsole.scrollHeight;
-    }
-  };
-})();
 
-clearConsoleBtn.addEventListener('click', () => {
-  if (devConsole) devConsole.innerHTML = '';
-});
+
 /* ---------- First Load ---------- */
 refresh();
