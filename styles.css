@@ -533,14 +533,6 @@ body.search-active .app-header .header-actions{ visibility:hidden; }
 [data-theme='material'] .dropdown { border: 1px solid rgba(0,0,0,.08); }
 
 /* =========================================================
-   CARD BACKGROUND CONTROLLED BY JS
-   ========================================================= */
-.card{
-  /* fallback stays none; JS provides gradient driven by category color */
-  background: none;
-}
-
-/* =========================================================
    HIDE NATIVE CLEAR (X) IN SEARCH INPUTS
    ========================================================= */
 input[type="search"]::-webkit-search-decoration,
@@ -551,7 +543,7 @@ input[type="search"]::-ms-clear,
 input[type="search"]::-ms-reveal { display: none; width: 0; height: 0; }
 /* ---------- Fix: ensure Material theme overrides dark defaults ---------- */
 [data-theme='material'] #noteTitle.title-input {
-  background: var(--surface);
+background: var(--surface);
   color: var(--text);
   border: 1px solid rgba(0,0,0,.1);
   box-shadow: none;
