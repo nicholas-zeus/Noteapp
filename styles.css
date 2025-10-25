@@ -70,9 +70,11 @@ body{
 /* Dark & Light keep radial hero; Material is flat */
 body {
   background: radial-gradient(1200px 600px at 20% -10%, #374883, var(--bg));
+  background-attachment: fixed;
 }
 [data-theme='light'] body {
   background: radial-gradient(1200px 600px at 20% -10%, #b5c6fd, var(--bg));
+  background-attachment: fixed;
 }
 [data-theme='material'] body {
   background: var(--bg);
@@ -183,7 +185,13 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap:16px;
 }
-
+/* Make the main card area scrollable while keeping background fixed */
+#cardsView {
+  flex: 1;
+  overflow-y: auto;
+  height: calc(100vh - var(--header-h));
+  padding: 16px;
+}
 .card{
   position:relative;
   background: var(--surface) !important; 
@@ -558,4 +566,9 @@ background: var(--surface);
 
 [data-theme='material'] #categorySelectLabel {
   color: var(--text) !important;
+}
+[data-theme='light'] .card,
+[data-theme='material'] .card,
+[data-theme='dark'] .card {
+  border-top: 4px solid var(--category-color, transparent) !important;
 }
