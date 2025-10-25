@@ -21,9 +21,7 @@
   --shadow-2: 0 20px 50px rgba(0,0,0,.45);
   --radius: 18px;
   --header-h: 64px;
-  --category-color: transparent;
 }
-
 
 /* Light theme tokens */
 [data-theme='light'] {
@@ -186,8 +184,8 @@ body {
 
 .card{
   position:relative;
-  background: var(--surface) !important; 
-  color: var(--text) !important;
+  background: none; /* JS controls gradient */
+  color: var(--text);
   border:1px solid rgba(255,255,255,.08);
   border-radius: var(--radius);
   padding: 16px; min-height: 140px;
@@ -196,7 +194,6 @@ body {
   transform: translateZ(0);
   transition: transform .18s ease, box-shadow .18s ease, background .2s ease;
   cursor: pointer;
-  border-top: 4px solid var(--category-color, transparent);
 }
 .card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-2); }
 .card .card-title{ font-weight:600; margin:0 0 8px; font-size: 15px; }
@@ -551,4 +548,19 @@ input[type="search"]::-ms-clear,
 input[type="search"]::-ms-reveal { display: none; width: 0; height: 0; }
 /* ---------- Fix: ensure Material theme overrides dark defaults ---------- */
 [data-theme='material'] #noteTitle.title-input {
-  back
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid rgba(0,0,0,.1);
+  box-shadow: none;
+}
+
+[data-theme='material'] #richEditor.editor {
+  background: var(--surface);
+  color: var(--text);
+  border-top: 1px solid rgba(0,0,0,.05);
+  border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+[data-theme='material'] #categorySelectLabel {
+  color: var(--text) !important;
+}
