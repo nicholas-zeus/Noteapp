@@ -145,15 +145,18 @@ if (mobileSearchInput) {
 function renderCards() {
   cardsView.innerHTML = '';
   const notes = getVisibleNotes();
-  
 
   notes.forEach((n, i) => {
     const cat = categoryById(n.primaryCategoryId) || { color: '#1b2030', name: 'Uncategorized' };
     const card = document.createElement('article');
     card.className = 'card';
-    card.style.background = `linear-gradient(rgba(255,255,255,0.3), ${cat.color})`;
-    card.style.color = textColorFor(cat.color);
+
+    // ✅ Set category color only for border
+    card.style.setProperty('--category-color', cat.color);
+
+    // Optional: fade-in animation (kept from old version)
     card.style.animation = `fadeIn .25s ease ${i * 0.02}s both`;
+
     card.innerHTML = `
       <h3 class="card-title">${escapeHtml(n.title || 'Untitled')}</h3>
       <div class="card-body">${previewFromContent(n)}</div>
@@ -162,10 +165,13 @@ function renderCards() {
         <span>${new Date(n.updatedAt || Date.now()).toLocaleString()}</span>
       </div>
     `;
+
+    // Keep click event same
     card.addEventListener('click', async () => {
       const note = await loadNoteIntoEditor(n.id);
       openEditor(note, cat.color);
     });
+
     cardsView.appendChild(card);
   });
 }
