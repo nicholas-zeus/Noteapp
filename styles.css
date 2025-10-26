@@ -572,3 +572,30 @@ background: var(--surface);
 [data-theme='dark'] .card {
   border-top: 4px solid var(--category-color, transparent) !important;
 }
+/* =========================================================
+   CATEGORY OPTION LIST (used in filter + editor overlays)
+   ========================================================= */
+.category-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.category-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme='light'] .category-option:hover,
+[data-theme='material'] .category-option:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.category-option .cat-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}

@@ -215,7 +215,34 @@ function updateCategoryFilterLabel() {
     }
   }
 }
+/* ---------- Category filter dropdown (card view) ---------- */
+async function paintCategoryFilterDropdown() {
+  const dropdown = document.getElementById('categoryFilterDropdown');
+  if (!dropdown) return;
 
+  allCategories = await listCategories();
+  dropdown.innerHTML = `
+    <div class="category-option" data-id="">
+      <span class="cat-swatch" style="background:transparent"></span>
+      <span class="cat-name">All Categories</span>
+    </div>
+    ${allCategories.map(c => `
+      <div class="category-option" data-id="${c.id}">
+        <span class="cat-swatch" style="background:${c.color}"></span>
+        <span class="cat-name">${c.name}</span>
+      </div>
+    `).join('')}
+  `;
+
+  dropdown.querySelectorAll('.category-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      activeFilterId = opt.dataset.id || '';
+      renderCards();
+      updateCategoryFilterLabel();
+      dropdown.classList.add('hidden');
+    });
+  });
+}
 
 /* ---------- Category overlay event listener (from editor.js) ---------- */
 document.addEventListener('categoryFilterChanged', e => {
@@ -225,25 +252,27 @@ document.addEventListener('categoryFilterChanged', e => {
 });
 
 /* ---------- Category list render ---------- */
+/* ---------- Category list render (used in settings modal) ---------- */
 async function paintCategoriesList() {
   allCategories = await listCategories();
   categoriesList.innerHTML = '';
+
   for (const c of allCategories) {
     const row = document.createElement('div');
-    row.className = 'category-item';
+    row.className = 'category-item category-option';
     row.innerHTML = `
-      <div class="category-swatch" style="background:${c.color}"></div>
-      <div style="flex:1">
-        <div style="font-weight:600">${c.name}</div>
-        <div style="font-size:12px;opacity:.8">${c.color}</div>
-      </div>
+      <span class="cat-swatch" style="background:${c.color}"></span>
+      <span class="cat-name" style="flex:1;font-weight:600">${c.name}</span>
+      <span style="font-size:12px;opacity:.7">${c.color}</span>
       <button class="btn tiny">Delete</button>
     `;
+
     row.querySelector('button').addEventListener('click', async () => {
       await deleteCategory(c.id);
       await paintCategoriesList();
       await refresh();
     });
+
     categoriesList.appendChild(row);
   }
 }
@@ -314,3 +343,4 @@ document.addEventListener('notes:changed', refresh);
 
 /* ---------- First Load ---------- */
 refresh();
+paintCategoryFilterDropdown();
