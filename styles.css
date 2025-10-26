@@ -600,3 +600,16 @@ background: var(--surface);
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
+.card-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;        /* show 1 line only */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
