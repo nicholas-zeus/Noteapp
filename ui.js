@@ -216,14 +216,17 @@ function updateCategoryFilterLabel() {
   }
 }
 /* ---------- Category filter dropdown (card view) ---------- */
+/* ---------- Category filter overlay (card view) ---------- */
 async function paintCategoryFilterDropdown() {
-  const dropdown = document.getElementById('categoryFilterDropdown');
-  if (!dropdown) return;
+  // Use the shared overlay list instead of a separate dropdown
+  const overlay = document.getElementById('categoryOverlay');
+  const list = document.getElementById('categoryOverlayList');
+  if (!overlay || !list) return;
 
   allCategories = await listCategories();
-  dropdown.innerHTML = `
+  list.innerHTML = `
     <div class="category-option" data-id="">
-      <span class="cat-swatch" style="background:transparent"></span>
+      <span class="cat-swatch" style="background:transparent;border:1px dashed var(--muted)"></span>
       <span class="cat-name">All Categories</span>
     </div>
     ${allCategories.map(c => `
@@ -234,12 +237,12 @@ async function paintCategoryFilterDropdown() {
     `).join('')}
   `;
 
-  dropdown.querySelectorAll('.category-option').forEach(opt => {
+  list.querySelectorAll('.category-option').forEach(opt => {
     opt.addEventListener('click', () => {
       activeFilterId = opt.dataset.id || '';
       renderCards();
       updateCategoryFilterLabel();
-      dropdown.classList.add('hidden');
+      overlay.classList.add('hidden');
     });
   });
 }

@@ -297,10 +297,16 @@ async function openCategoryOverlay(context) {
   overlayContext = context;
   const cats = await listCategories();
   categoryOverlayList.innerHTML = '';
+
+  // Build category list with color swatches
   cats.forEach(c => {
     const item = document.createElement('div');
-    item.className = 'cat-option';
-    item.innerHTML = `<div class="cat-swatch" style="background:${c.color}"></div><div>${c.name}</div>`;
+    item.className = 'category-option';
+    item.innerHTML = `
+      <span class="cat-swatch" style="background:${c.color}"></span>
+      <span class="cat-name">${c.name}</span>
+    `;
+
     item.addEventListener('click', async () => {
       categoryOverlay.classList.add('hidden');
       if (context === 'filter') {
@@ -318,14 +324,18 @@ async function openCategoryOverlay(context) {
         document.dispatchEvent(new CustomEvent('notes:changed'));
       }
     });
+
     categoryOverlayList.appendChild(item);
   });
 
-  // also add an "All Categories" option for filter view
+  // Add "All Categories" option for filter mode
   if (context === 'filter') {
     const allItem = document.createElement('div');
-    allItem.className = 'cat-option';
-    allItem.textContent = 'All Categories';
+    allItem.className = 'category-option';
+    allItem.innerHTML = `
+      <span class="cat-swatch" style="background:transparent;border:1px dashed var(--muted)"></span>
+      <span class="cat-name">All Categories</span>
+    `;
     allItem.addEventListener('click', () => {
       categoryFilterLabel.textContent = 'All Categories';
       categoryFilterSwatch.style.background = 'transparent';
@@ -337,7 +347,6 @@ async function openCategoryOverlay(context) {
 
   categoryOverlay.classList.remove('hidden');
 }
-
 categorySelectTrigger.addEventListener('click', (e) => {
   e.preventDefault();
   openCategoryOverlay('assign');
