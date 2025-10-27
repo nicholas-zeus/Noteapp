@@ -45,7 +45,7 @@ export async function openEditor(note, catColor) {
   els.rich.innerHTML = note.format === 'code' ? '' : (note.content || '');
   els.code.classList.toggle('hidden', note.format !== 'code');
   els.rich.classList.toggle('hidden', note.format === 'code');
-
+syncCheckboxStates();
   if (note.format === 'code') ensureCodeMirror(note.content || '');
   else destroyCodeMirror();
 
@@ -74,7 +74,14 @@ function ensureCodeMirror(value) {
   codeMirror.setValue(value || '');
   codeMirror.on('change', scheduleAutosave);
 }
-
+function syncCheckboxStates() {
+  els.rich.querySelectorAll('.checkline').forEach(line => {
+    const cb = line.querySelector('input[type="checkbox"]');
+    if (!cb) return;
+    // Tick if the line is marked done
+    cb.checked = line.classList.contains('done');
+  });
+}
 function destroyCodeMirror() {
   if (!codeMirror) return;
   codeMirror.toTextArea();
