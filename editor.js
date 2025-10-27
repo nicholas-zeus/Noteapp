@@ -147,14 +147,104 @@ function wrapSelection(cmd) {
   scheduleAutosave();
 }
 
-function insertChecklist() {
+/*function insertChecklist() {
   const p = document.createElement('p');
   p.className = 'checkline';
-  p.innerHTML = `<input type="checkbox" /> <span>Checklist item</span>`;
+  p.innerHTML = `<input type="checkbox" /> <span>&nbsp;</span>`;
   els.rich.appendChild(p);
   scheduleAutosave();
+}*/
+// Helper: find the nearest block within the rich editor
+function closestBlockInEditor(node) {
+  if (!node) return null;
+  const blocks = ['P','DIV','LI'];
+  let cur = node.nodeType === 3 ? node.parentElement : node;
+  while (cur && cur !== els.rich) {
+    if (blocks.includes(cur.tagName)) return cur;
+    cur = cur.parentElement;
+  }
+  return null;
 }
 
+// Helper: place caret at end of a node
+function placeCaretAtEnd(node) {
+  const sel = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(node);
+  range.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(range);
+}
+
+// Helper: ensure first line is a blank non-checklist block
+function ensureLeadingBlankLine() {
+  const first = els.rich.firstElementChild;
+  if (!first || first.classList.contains('checkline')) {
+    const p = document.createElement('p');
+    p.textContent = '\u200B';
+    els.rich.insertBefore(p, els.rich.firstChild);
+  }
+}
+
+function insertChecklist() {
+  const hasAnyText = (els.rich.textContent || '').trim().length > 0;
+
+  // Create the checklist line with empty span
+  const checkP = document.createElement('p');
+  checkP.className = 'checkline';
+  checkP.innerHTML = `<input type="checkbox" /> <span>&nbsp;</span>`;
+
+  // If no text yet: add a blank first line, then the checklist
+  if (!hasAnyText) {
+    ensureLeadingBlankLine();
+    // Insert checklist after that blank first line
+    const first = els.rich.firstElementChild;
+    if (first.nextSibling) {
+      els.rich.insertBefore(checkP, first.nextSibling);
+    } else {
+      els.rich.appendChild(checkP);
+    }
+  } else {
+    // There is text: insert one line below current caret block (if inside editor)
+    const sel = window.getSelection();
+    const caretInside = sel && sel.rangeCount && els.rich.contains(sel.getRangeAt(0).startContainer);
+    const caretBlock = caretInside ? closestBlockInEditor(sel.getRangeAt(0).startContainer) : null;
+
+    if (caretBlock && caretBlock.parentNode === els.rich) {
+      // Insert after current block
+      if (caretBlock.nextSibling) {
+        els.rich.insertBefore(checkP, caretBlock.nextSibling);
+      } else {
+        els.rich.appendChild(checkP);
+      }
+    } else {
+      // Caret not in editor: insert at end (still below existing text)
+      els.rich.appendChild(checkP);
+    }
+
+    // Guard: never allow checklist to become the first line
+    ensureLeadingBlankLine();
+    if (els.rich.firstElementChild === checkP) {
+      // If it accidentally became first, move it to second
+      els.rich.removeChild(checkP);
+      const first = els.rich.firstElementChild;
+      if (first.nextSibling) {
+        els.rich.insertBefore(checkP, first.nextSibling);
+      } else {
+        els.rich.appendChild(checkP);
+      }
+    }
+  }
+
+  // Place caret into the empty span for immediate typing
+  const span = checkP.querySelector('span');
+  if (span) {
+    els.rich.focus();
+    placeCaretAtEnd(span);
+  }
+
+  scheduleAutosave();
+}
 function onCheckToggle(e) {
   const line = e.target.closest('.checkline');
   if (!line) return;
@@ -191,30 +281,7 @@ els.rich.addEventListener('change', onCheckToggle);
 els.rich.addEventListener('input', scheduleAutosave);
 els.title.addEventListener('input', scheduleAutosave);
 
-// category change
-// open overlay instead of native select
-/*els.primaryCategorySelect.addEventListener('click', async (e) => {
-  e.preventDefault();
-  const cats = await listCategories();
-  categoryOverlayList.innerHTML = '';
-  cats.forEach(c => {
-    const item = document.createElement('div');
-    item.className = 'cat-option';
-    item.innerHTML = `<div class="cat-swatch" style="background:${c.color}"></div><div>${c.name}</div>`;
-    item.addEventListener('click', async () => {
-      activeNote.primaryCategoryId = c.id;
-      await saveNote(activeNote);
-      applyEditorTheme(c.color);
-      categoryOverlay.classList.add('hidden');
-      document.dispatchEvent(new CustomEvent('notes:changed'));
-    });
-    categoryOverlayList.appendChild(item);
-  });
-  categoryOverlay.classList.remove('hidden');
-});*/
-/*closeCategoryOverlayBtn.addEventListener('click', () => categoryOverlay.classList.add('hidden'));*/
 
-/* ---------- Dropdown Menu ---------- */
 els.moreMenuBtn.addEventListener('click', e => {
   e.stopPropagation();
 
