@@ -52,6 +52,9 @@ syncCheckboxStates();
   document.body.classList.add('editing');
   els.overlay.classList.remove('hidden');
   els.title.focus();
+  if (note.format === 'code' && codeMirror) {
+  setTimeout(() => codeMirror.refresh(), 50); // ensure correct gutter sizing
+}
 }
 
 export function closeEditor() {
@@ -67,13 +70,27 @@ function ensureCodeMirror(value) {
   codeMirror = window.CodeMirror.fromTextArea(els.code, {
     mode: 'javascript',
     lineNumbers: true,
+    lineWrapping: true,
     tabSize: 2,
     indentUnit: 2,
     theme: 'default',
   });
   codeMirror.setValue(value || '');
-  codeMirror.on('change', scheduleAutosave);
+  codeMirror.setSize('100%', '100%');
+  codeMirror.on('change', () => {
+    scheduleAutosave();
+    autoDetectMode();
+  });
 }
+function autoDetectMode() {
+  const code = codeMirror.getValue();
+  if (!code.trim()) return;
+  const result = window.hljs.highlightAuto(code);
+  const lang = result.language || 'plaintext';
+  const currentMode = codeMirror.getOption('mode');
+  if (lang !== currentMode) codeMirror.setOption('mode', lang);
+}
+
 function syncCheckboxStates() {
   els.rich.querySelectorAll('.checkline').forEach(line => {
     const cb = line.querySelector('input[type="checkbox"]');
@@ -138,7 +155,15 @@ function applyEditorTheme() {
   els.panel.style.color = defaultText;
   els.rich.style.background = background;
   els.rich.style.color = defaultText;
-
+if (codeMirror) {
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const bg = (theme === 'dark') ? '#0b0f16' :
+             (theme === 'light') ? '#ffffff' : '#fafbfc';
+  const text = (theme === 'dark') ? '#e7ecf7' :
+               (theme === 'light') ? '#111111' : '#1e1f23';
+  codeMirror.getWrapperElement().style.background = bg;
+  codeMirror.getWrapperElement().style.color = text;
+}
   document.querySelectorAll('.tool, .title-input, .select').forEach(el => {
     el.style.color = defaultText;
     el.style.borderColor = border;
@@ -339,20 +364,31 @@ els.addVoiceMenuBtn.addEventListener('click', async () => {
 
 els.toggleCodeMenuBtn.addEventListener('click', () => {
   if (!activeNote) return;
+
   if (activeNote.format === 'code') {
+    // switching to rich text
     activeNote.format = 'richtext';
     els.code.classList.add('hidden');
     els.rich.classList.remove('hidden');
     els.rich.innerHTML = codeMirror?.getValue() || '';
     destroyCodeMirror();
   } else {
+    // switching to full code mode
     activeNote.format = 'code';
     els.rich.classList.add('hidden');
     els.code.classList.remove('hidden');
+
+    // make code editor fill panel
+    els.code.style.width = '100%';
+    els.code.style.height = '100%';
     ensureCodeMirror(els.rich.innerHTML);
+
+    // refresh layout to fix gutter
+    setTimeout(() => codeMirror.refresh(), 50);
   }
   scheduleAutosave();
 });
+
 
 els.deleteNoteMenuBtn.addEventListener('click', async () => {
   if (!activeNote) return;

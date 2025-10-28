@@ -615,3 +615,137 @@ background: var(--surface);
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Prevent horizontal scrolling / overflow */
+.CodeMirror {
+  width: 100%;
+  overflow-x: hidden !important;
+  word-wrap: break-word !important;
+  white-space: pre-wrap !important;
+}
+.CodeMirror, .CodeMirror-scroll {
+  background: inherit !important;
+  color: inherit !important;
+}
+#codeEditor, .CodeMirror {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+#editorPanel {
+display: flex;
+flex-direction: column;
+}
+.CodeMirror {
+  flex: 1 !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+}
+
+.CodeMirror-scroll {
+  flex: 1 !important;
+  height: 100% !important;
+}
+[data-theme='dark'] .CodeMirror-cursor {
+  border-left: 2px solid #ffffff !important;
+}
+/* =========================================================
+   CodeMirror Scrollbar Theme
+   ========================================================= */
+
+/* Base scrollbar style */
+.CodeMirror-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Scrollbar thumb */
+.CodeMirror-scroll::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+/* Scrollbar track */
+.CodeMirror-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Hover effect */
+.CodeMirror-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* =========================================================
+   Unified Scrollbar Theme (CodeMirror + Overlay)
+   ========================================================= */
+
+/* Base scrollbar width and track */
+.CodeMirror-scroll::-webkit-scrollbar,
+.overlay::-webkit-scrollbar,
+.editor::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.CodeMirror-scroll::-webkit-scrollbar-track,
+.overlay::-webkit-scrollbar-track,
+.editor::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Scrollbar thumb (default / all themes) */
+[data-theme='light'] .CodeMirror-scroll::-webkit-scrollbar-thumb,
+[data-theme='dark'] .CodeMirror-scroll::-webkit-scrollbar-thumb,
+[data-theme='material'] .CodeMirror-scroll::-webkit-scrollbar-thumb,
+[data-theme='light'] .overlay::-webkit-scrollbar-thumb,
+[data-theme='dark'] .overlay::-webkit-scrollbar-thumb,
+[data-theme='material'] .overlay::-webkit-scrollbar-thumb,
+[data-theme='light'] .editor::-webkit-scrollbar-thumb,
+[data-theme='dark'] .editor::-webkit-scrollbar-thumb,
+[data-theme='material'] .editor::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
+/* Hover / active state */
+[data-theme='light'] .CodeMirror-scroll::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .CodeMirror-scroll::-webkit-scrollbar-thumb:hover,
+[data-theme='material'] .CodeMirror-scroll::-webkit-scrollbar-thumb:hover,
+[data-theme='light'] .overlay::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .overlay::-webkit-scrollbar-thumb:hover,
+[data-theme='material'] .overlay::-webkit-scrollbar-thumb:hover,
+[data-theme='light'] .editor::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .editor::-webkit-scrollbar-thumb:hover,
+[data-theme='material'] .editor::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Firefox scrollbar compatibility */
+.CodeMirror-scroll,
+.overlay,
+.editor {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+}
+/* =========================================================
+   CodeMirror Gutter Styling
+   ========================================================= */
+
+/* Dark theme: dark blue gutter */
+[data-theme='dark'] .CodeMirror-gutters {
+  background: #0d1b3d !important;   /* deep dark blue */
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Light / Material themes: neutral gutter */
+[data-theme='light'] .CodeMirror-gutters,
+[data-theme='material'] .CodeMirror-gutters {
+  background: var(--surface-2) !important;
+  border-right: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Optional: tweak gutter text color */
+.CodeMirror-linenumber {
+  color: var(--muted) !important;
+}
+
