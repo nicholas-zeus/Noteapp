@@ -748,4 +748,26 @@ flex-direction: column;
 .CodeMirror-linenumber {
   color: var(--muted) !important;
 }
+/* =========================================================
+   Toolbar Spacing & Group Divider
+   ========================================================= */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;                /* increase spacing between tools */
+  margin-left: auto;
+}
+
+/* visually separate "Add Checkbox" button */
+.toolbar .tool-group-sep {
+  display: inline-block;
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 8px;
+}
+[data-theme='light'] .toolbar .tool-group-sep,
+[data-theme='material'] .toolbar .tool-group-sep {
+  background: rgba(0, 0, 0, 0.15);
+}
 
